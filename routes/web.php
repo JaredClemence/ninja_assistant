@@ -23,5 +23,16 @@ Route::group(['middleware'=>['auth','has_contacts']], function(){
         { return "Daily Call List"; })->name('daily_call');
 } );
 Route::group(['middleware'=>['auth']], function(){
-    Route::get('/contacts/info', function(){ return "Instructoins"; } )->name('upload_contacts_instruction');
+    Route::get('/contacts/info', function(){ 
+        return view('contacts.upload.start');
+    } )->name('upload_contacts_instruction');
+    Route::get('/contacts/android', function(){ 
+        return view('contacts.upload.android');
+    } )->name('android_instruction');
+    Route::get('/contacts/iphone', function(){ 
+        return "iPhone";
+    } )->name('iphone_instruction');
+    Route::get('/contacts/upload', function(){ 
+        return view('contacts.upload.upload');
+    } )->name('upload_csv');
 });
