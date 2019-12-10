@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\UploadedFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UploadedFileController extends Controller
 {
@@ -73,24 +74,23 @@ class UploadedFileController extends Controller
         //
     }
 
-    public static function process($this) {
-        
-    }
-
-    public function create(Request $request, $file_identifier) : UploadedFile {
+    public static function create(Request $request, $file_identifier) : UploadedFile {
         $user = Auth::user();
-        $path = $request->file($file_identifier)->store('uploads');
-        dd( $path );
-        $name = basename($path);
-        $uploadedFile = UploadedFile::create(
-                [
-                    'user_id'=>$user->id,
-                    'name'=>$name,
-                    'full_path'=>$path,
-                ]
-                );
-        $uploadedFile->save();
-        return $uploadedFile;
+        if ($request->file($file_identifier)->isValid()) {
+            $path = $request->file($file_identifier)->store('uploads');
+            $name = basename($path);
+            $uploadedFile = UploadedFile::create(
+                            [
+                                'user_id' => $user->id,
+                                'name' => $name,
+                                'full_path' => $path,
+                            ]
+            );
+            $uploadedFile->save();
+            return $uploadedFile;
+        } else {
+            dd('invalid');
+        }
     }
 
 }

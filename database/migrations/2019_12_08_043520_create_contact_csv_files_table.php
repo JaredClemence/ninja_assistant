@@ -19,6 +19,7 @@ class CreateContactCsvFilesTable extends Migration
             $table->integer('user_id');
             $table->integer('uploaded_file_id');
             $table->string('format');
+            $table->integer('accepted_terms')->default(0);
         });
     }
 

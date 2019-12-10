@@ -9,16 +9,26 @@ use App\Http\Controllers\AbstractFactory\CsvFiles\AbstractController;
 use App\Http\Controllers\UploadedFileController;
 use App\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class ContactCsvFileController extends Controller {
 
     public function upload(Request $request) {
+        $request->validate([
+            'csv_upload'=>'required|file',
+            'format'=>['required',
+                Rule::in(['iphone','android'])],
+            'terms'=>'accepted'
+        ]);
         $uploadedFile = $this->storeFile($request);
         /* @var $uploadedFile \App\UploadedFile */
-        $contactCsvFile = ContactCsvFileController::create([
+        $contactCsvFile = ContactCsvFile::create([
                     'user_id' => $uploadedFile->user_id,
-                    'uploaded_file_id' => $uploadedFile->id
+                    'uploaded_file_id' => $uploadedFile->id,
+                    'format'=> $request->input("format", "not set"),
+                    'accepted_terms'=> $request->input("terms",0)=="on"
         ]);
+        $contactCsvFile->save();
         return redirect('/contacts/success');
     }
 
@@ -112,27 +122,7 @@ class ContactCsvFileController extends Controller {
     }
 
     private function storeFile($request): UploadedFile {
-        //$controller = new UploadedFileController();
-        return $this->createUpload($request, 'csv_upload');
-    }
-
-    public function createUpload(Request $request, $file_identifier): UploadedFile {
-        $user = Auth::user();
-        if ($request->file($file_identifier)->isValid()) {
-            $path = $request->file($file_identifier)->store('uploads');
-            $name = basename($path);
-            $uploadedFile = UploadedFile::create(
-                            [
-                                'user_id' => $user->id,
-                                'name' => $name,
-                                'full_path' => $path,
-                            ]
-            );
-            $uploadedFile->save();
-            return $uploadedFile;
-        } else {
-            dd('invalid');
-        }
+        return UploadedFileController::create($request, 'csv_upload');
     }
 
 }

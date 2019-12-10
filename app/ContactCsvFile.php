@@ -16,7 +16,8 @@ class ContactCsvFile extends Model
     protected $fillable = [
         'format',
         'user_id',
-        'uploaded_file_id'
+        'uploaded_file_id',
+        'accepted_terms'
     ];
     
     public function upload(){

@@ -30,13 +30,13 @@ Route::group(['middleware'=>['auth']], function(){
         return view('contacts.upload.android');
     } )->name('android_instruction');
     Route::get('/contacts/iphone', function(){ 
-        return "iPhone";
+        return view('contacts.upload.iphone');
     } )->name('iphone_instruction');
     Route::get('/contacts/upload', function(){ 
         return view('contacts.upload.upload');
     } )->name('upload_csv');
     Route::post('/contacts/upload', 'ContactCsvFileController@upload');
     Route::get('/contacts/success', function(){
-        return "Successful file upload.";
+        return view('contacts.upload.success');
     });
 });
