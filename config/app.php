@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'CMP Real Estate Assistant'),
+    'name' => env('APP_NAME', 'The Ninja Assistant'),
 
     /*
     |--------------------------------------------------------------------------
