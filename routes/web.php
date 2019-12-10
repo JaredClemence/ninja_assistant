@@ -35,4 +35,8 @@ Route::group(['middleware'=>['auth']], function(){
     Route::get('/contacts/upload', function(){ 
         return view('contacts.upload.upload');
     } )->name('upload_csv');
+    Route::post('/contacts/upload', 'ContactCsvFileController@upload');
+    Route::get('/contacts/success', function(){
+        return "Successful file upload.";
+    });
 });

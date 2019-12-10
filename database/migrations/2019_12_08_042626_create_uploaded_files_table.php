@@ -17,6 +17,7 @@ class CreateUploadedFilesTable extends Migration
             /* @var $table Blueprint */
             $table->bigIncrements('id');
             $table->timestamps();
+            $table->integer('user_id');
             $table->string('name')->nullable();
             $table->string('full_path')->nullable();
             $table->dateTime('process_date')->nullable();

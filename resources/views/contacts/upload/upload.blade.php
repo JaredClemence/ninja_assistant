@@ -7,11 +7,11 @@
 <p>Upload your contacts here. This will not overwrite existing records. 
     If a matching record exists, it will be expanded with new data.</p>
 <div class="jumbotron">
-    <form>
+    <form method="post" enctype="multipart/form-data">
         @csrf
         <div class="form-group">
             <label><strong>Select a file:</strong></label>
-            <input type="file" class="form-control-file"></input>
+            <input type="file" name="csv_upload" class="form-control-file"></input>
         </div>
         <div class="form-group">
             <label><strong>Format</strong></label>

@@ -8,6 +8,7 @@ use App\User;
 /**
  * @property string $name File name
  * @property string $full_path Full path to storage location
+ * @property int $user_id The user who uploaded the document
  * @property boolean $process_date
  * @property boolean $processed
  * @property boolean $archived
@@ -15,6 +16,7 @@ use App\User;
 class UploadedFile extends Model
 {
     protected $fillable = [
+        'user_id',
         'name',
         'full_path',
         'process_date',
@@ -27,4 +29,8 @@ class UploadedFile extends Model
         'processed'=>'boolean',
         'archived'=>'boolean'
     ];
+    
+    public function user(){
+        return $this->belongsTo( User::class );
+    }
 }
