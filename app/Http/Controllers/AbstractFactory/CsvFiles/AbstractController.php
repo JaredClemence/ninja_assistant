@@ -10,6 +10,26 @@ use Exception;
 
 abstract class AbstractController extends Controller
 {
+    private $delegate;
+    
+    private function fakeDelegate(){
+        $this->delegate = new \stdClass();
+        $this->delegate->reportLinesCount = function($a){};
+        $this->delegate->reportHeader = function($a){};
+    }
+    
+    protected function initializeDelegate() {
+        if($this->delegate==null){
+            $this->fakeDelegate();
+        }
+    }
+    
+    public function setDelegate( $delegate ){
+        $this->delegate = $delegate;
+    }
+    
+    public function getDelegate(){ return $this->delegate; }
+    
     public function archive(ContactCsvFile $contact){
         $identifier = $this->getFileIdentifier($contact);
         throw new Exception("$identifier cannot be archived in the present state.");

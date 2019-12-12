@@ -102,21 +102,22 @@ class ContactCsvFileController extends Controller {
     }
 
     public static function delete(ContactCsvFile $contactCsvFile) {
-        $controller = $this->makeController($contactCsvFile);
+        $controller = self::makeController($contactCsvFile);
         $controller->delete($contactCsvFile);
     }
 
     public static function archive(ContactCsvFile $contactCsvFile) {
-        $controller = $this->makeController($contactCsvFile);
+        $controller = self::makeController($contactCsvFile);
         $controller->archive($contactCsvFile);
     }
 
-    public static function process(ContactCsvFile $contactCsvFile) {
-        $controller = $this->makeController($contactCsvFile);
+    public static function process(ContactCsvFile $contactCsvFile, $testDelegate=null) {
+        $controller = self::makeController($contactCsvFile);
+        $controller->setDelegate($testDelegate);
         $controller->process($contactCsvFile);
     }
 
-    private function makeController(ContactCsvFile $contactCsvFile): AbstractController {
+    private static function makeController(ContactCsvFile $contactCsvFile): AbstractController {
         $controller = CsvFileControllerFactory::make($contactCsvFile);
         return $controller;
     }

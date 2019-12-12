@@ -28,8 +28,8 @@ class ContactCsvFile extends Model
         return $this->belongsTo( User::class );
     }
     
-    public function process(){
-        ContactCsvFileController::process( $this );
+    public function process($testDelegate=null){
+        ContactCsvFileController::process( $this, $testDelegate );
     }
     
     public function archive(){

@@ -13,6 +13,8 @@ use App\UploadedFile;
 
 class CsvFileControllerFactory extends Controller
 {
+    static private $instantiated = [];
+    
     public static function make( $contactCsvFile ): AbstractController {
         if(is_null($contactCsvFile)){
             return new NullController();
@@ -25,15 +27,22 @@ class CsvFileControllerFactory extends Controller
         $controller = null;
         /* @var $uploadFile UploadedFile */
         if(is_null($uploadFile)){
-            $controller =  new NullController();
+            $controller =  self::getControllerByClass( NullController::class );
         }else if( $uploadFile->archived ){
-            $controller =  new ArchivedController();
+            $controller =  self::getControllerByClass( ArchivedController::class );
         }else if( $uploadFile->processed ){
-            $controller =  new ProcessedController();
+            $controller =  self::getControllerByClass( ProcessedController::class );
         }else{
-            $controller = new UnprocessedController();
+            $controller = self::getControllerByClass( UnprocessedController::class );
         }
         return $controller;
+    }
+    
+    private static function getControllerByClass( $className ){
+        if( isset( self::$instantiated[$className] )==false){
+            self::$instantiated[$className] = new $className();
+        }
+        return self::$instantiated[$className];
     }
 
 }
