@@ -6,5 +6,7 @@ use App\ContactCsvFile;
 use Faker\Generator as Faker;
 
 $factory->define(ContactCsvFile::class, function (Faker $faker) {
-    return [];
+    return [
+        'format'=>$faker->randomElement(['iphone','android'])
+    ];
 });

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $name Unique identifier for contact record
  * @property string $note Notes on the contact.
+ * @property boolean $active
  */
 class Contact extends Model
 {

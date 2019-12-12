@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\User;
+use Carbon\Carbon;
 
 /**
  * @property string $name File name
@@ -33,4 +34,10 @@ class UploadedFile extends Model
     public function user(){
         return $this->belongsTo( User::class );
     }
+
+    public function markProcessed() {
+        $this->processed = true;
+        $this->process_date = new Carbon("now");
+    }
+
 }

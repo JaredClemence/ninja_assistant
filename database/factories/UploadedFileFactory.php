@@ -9,7 +9,8 @@ $factory->define(UploadedFile::class, function (Faker $faker) {
     $name = $faker->randomNumber(4);
     return [
         'name' => $name,
-        'full_path' => '/fake/path/for/testing/' . $name
+        'full_path' => '/fake/path/for/testing/' . $name,
+        'user_id' => 1
     ];
 });
 
