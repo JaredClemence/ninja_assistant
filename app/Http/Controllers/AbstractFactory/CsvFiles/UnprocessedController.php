@@ -5,6 +5,7 @@ namespace App\Http\Controllers\AbstractFactory\CsvFiles;
 use App\Http\Controllers\AbstractFactory\CsvFiles\AbstractController;
 use Illuminate\Support\Facades\Storage;
 use App\Clemence\Contact\IntermediateRecord;
+use App\Jobs\ConvertIntermideataryToJson;
 use App\UploadedFile;
 use Exception;
 
@@ -63,7 +64,7 @@ class UnprocessedController extends AbstractController
 
     private function makeJobs() {
         foreach( $this->intermediaries as $item ){
-            //dispatch job here.
+            ConvertIntermideataryToJson::dispatch($item);
         }
     }
 
@@ -97,6 +98,7 @@ class UnprocessedController extends AbstractController
             if( $char == '"'){
                 if( $quoteAlt == 1 ){
                     $line .= '"';
+                    $quoteAlt = 0;
                 }else if( $quoteCount == 0 ){
                     $quoteCount = 1;
                 }else{
