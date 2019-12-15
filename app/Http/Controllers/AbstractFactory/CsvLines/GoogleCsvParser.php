@@ -5,6 +5,7 @@ namespace App\Http\Controllers\AbstractFactory\CsvLines;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\AbstractFactory\CsvLines\AbstractCsvParser;
 use App\Http\Controllers\AbstractFactory\CsvLines\ContactJsonObj;
+use App\Http\Controllers\AbstractFactory\CsvLines\PhoneJsonObj;
 
 class GoogleCsvParser extends AbstractCsvParser {
 
@@ -48,9 +49,51 @@ class GoogleCsvParser extends AbstractCsvParser {
         return $lines[0];
     }
 
-    public function getJsonObject($headerText, $lineFields): ContactJsonObj {
+    public function getJsonObject($headerText, $lineText): ContactJsonObj {
+        $headers = $this->getFieldsFromCsvLine($headerText);
+        $data = $this->getFieldsFromCsvLine($lineText);
+        $map = $this->makeMap($headers, $data);
         $obj = new ContactJsonObj();
+        $obj->name = $this->getName($map);
+        $obj->address = $this->getAddress($map);
+        $obj->notes = $this->getNotes($map);
+        $obj->phones = $this->getPhones($map);
+        $obj->birthday = $this->getBirthday($map);
         return $obj;
+    }
+
+    private function getName($map) {
+        $fname = isset($map['Given Name']) ? $map['Given Name'] : '';
+        $lname = isset($map['Family Name']) ? $map['Family Name'] : '';
+
+        $name = '';
+        if (isset($map['Name']) && $map['Name'] != '' ) {
+            $name = $map['Name'];
+        } else if ($fname!='' || $lname!='') {
+            $name = trim("$fname $lname");
+        }
+        return $name;
+    }
+
+    private function getAddress($map) {
+        $address = isset($map['Address 1 - Formatted']) ? $map['Address 1 - Formatted'] : '';
+        return $address;
+    }
+
+    private function getNotes($map) {
+        $notes = isset($map['Notes']) ? $map['Notes'] : '';
+        return $notes;
+    }
+
+    private function getPhones($map) {
+        $phones = [];
+        for ($i = 1; $i < 4; $i++) {
+            $phone = $this->getPhoneByNumber($map, $i);
+            if ($phone) {
+                $phones[] = $phone;
+            }
+        }
+        return $phones;
     }
 
     public function getFormatObject(): FileFormat {
@@ -95,7 +138,7 @@ class GoogleCsvParser extends AbstractCsvParser {
         $loc = 0;
         do {
             $pos = strpos($line, '"', $loc);
-            if ($pos!==false) {
+            if ($pos !== false) {
                 $loc = $pos + 1;
                 $leftStr = substr($line, 0, $pos);
                 $rightStr = substr($line, $pos + 1);
@@ -103,6 +146,44 @@ class GoogleCsvParser extends AbstractCsvParser {
             }
         } while ($pos !== false && $loc < strlen($line));
         return $line;
+    }
+
+    private function getBirthday($map) {
+        $date = isset($map['Birthday']) ? $map['Birthday'] : '';
+        return $date;
+    }
+
+    private function buildPhoneJson($type, $number) {
+        $phone = new PhoneJsonObj();
+        $phone->type = $type;
+        $phone->number = $number;
+        return $phone;
+    }
+
+    private function getPhoneByNumber($map, $i) {
+        $typeIndex = "Phone $i - Type";
+        $valueIndex = "Phone $i - Value";
+        $type = isset($map[$typeIndex]) ? $map[$typeIndex] : null;
+        $value = isset($map[$valueIndex]) ? $map[$valueIndex] : null;
+        $phone = null;
+        if ($type || $value) {
+            $phone = $this->buildPhoneJson($type, $value);
+        }
+        return $phone;
+    }
+
+    protected function makeMap($headers, $data) {
+        $array = [];
+        do {
+            $header = array_shift($headers);
+            $datum = array_shift($data);
+            if ($header) {
+                $array[$header] = $datum;
+            } else {
+                $array[] = $datum;
+            }
+        } while (count($headers) || count($data));
+        return $array;
     }
 
 }

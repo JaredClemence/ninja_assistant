@@ -4,9 +4,9 @@ namespace App\Http\Controllers\AbstractFactory;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\AbstractFactory\CsvLines\NullCsvParser;
-use App\Http\Controllers\AbstractFactory\CsvLines\AppleContactsCsvParser;
 use App\Http\Controllers\AbstractFactory\CsvLines\GoogleCsvParser;
 use App\Http\Controllers\AbstractFactory\CsvLines\AbstractCsvParser;
+use App\Http\Controllers\AbstractFactory\CsvLines\MagazziOneParser;
 
 class CsvLineProcesserFactory extends Controller
 {
