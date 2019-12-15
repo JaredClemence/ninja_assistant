@@ -7,6 +7,9 @@ use App\Http\Controllers\AbstractFactory\CsvLines\AbstractCsvParser;
 
 class NullCsvParser extends AbstractCsvParser
 {
+    static public $format = "null";
+    static public $label = "Null CSV";
+    
     public function getFieldsFromCsvLine(string $lineText): array {
         $this->throwException();
     }
@@ -25,6 +28,10 @@ class NullCsvParser extends AbstractCsvParser
 
     public function breakFileIntoLines(string $csvContent): array {
         
+    }
+
+    public static function getFormatObject(): FileFormat {
+        return self::makeFileFormat( self::$format, self::$label );
     }
 
 }

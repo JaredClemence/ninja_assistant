@@ -8,6 +8,7 @@ use App\Http\Controllers\AbstractFactory\CsvFiles\ProcessedController;
 use App\Http\Controllers\AbstractFactory\CsvFiles\UnprocessedController;
 use App\Http\Controllers\AbstractFactory\CsvFiles\NullController;
 use App\Http\Controllers\AbstractFactory\CsvFiles\AbstractController;
+
 use App\ContactCsvFile;
 use App\UploadedFile;
 
@@ -21,6 +22,12 @@ class CsvFileControllerFactory extends Controller
         }
         $uploadFile = $contactCsvFile->upload;
         return self::makeFromUploadFile( $uploadFile );
+    }
+    
+    public static function getAvailableFileFormats(){
+        return [
+            
+        ];
     }
 
     private static function makeFromUploadFile($uploadFile) : AbstractController {
