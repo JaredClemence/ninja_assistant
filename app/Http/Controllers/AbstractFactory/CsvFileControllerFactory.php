@@ -25,9 +25,7 @@ class CsvFileControllerFactory extends Controller
     }
     
     public static function getAvailableFileFormats(){
-        return [
-            
-        ];
+        return CsvLineProcesserFactory::getAvailableFileFormats();
     }
 
     private static function makeFromUploadFile($uploadFile) : AbstractController {

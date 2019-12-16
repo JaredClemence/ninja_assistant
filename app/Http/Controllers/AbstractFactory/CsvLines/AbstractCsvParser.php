@@ -14,11 +14,12 @@ abstract class AbstractCsvParser extends Controller
     abstract public function getJsonObject( $headerText, $lineText ):ContactJsonObj;
     abstract public function getFormatObject():FileFormat;
     
-    protected static function makeFileFormat($format, $label) : FileFormat {
+    protected static function makeFileFormat($format_text, $label, $parser) : FileFormat {
         $format = new FileFormat();
         $format->fill([
-                    'format'=>$format,
-                    'label'=>$label
+                    'format'=>$format_text,
+                    'label'=>$label,
+                    'parser'=>$parser
                 ]);
         return $format;
     }

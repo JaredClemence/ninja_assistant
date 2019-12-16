@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\AbstractFactory;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\AbstractFactory\CsvLines\NullCsvParser;
 use App\Http\Controllers\AbstractFactory\CsvLines\GoogleCsvParser;
 use App\Http\Controllers\AbstractFactory\CsvLines\AbstractCsvParser;
 use App\Http\Controllers\AbstractFactory\CsvLines\MagazziOneParser;
+use App\Http\Controllers\AbstractFactory\CsvLines\NullParser;
 
 class CsvLineProcesserFactory extends Controller
 {
@@ -19,6 +19,13 @@ class CsvLineProcesserFactory extends Controller
         return self::$instantiated[$className];
     }
     
+    static public function getAvailableFileFormats(){
+        return [
+            GoogleCsvParser::makeFormat(),
+            MagazziOneParser::makeFormat()
+        ];
+    }
+    
     /**
      * Based on the provided format return a different controller for parsing the CSV files.
      * 
@@ -26,16 +33,15 @@ class CsvLineProcesserFactory extends Controller
      * @return AbstractCsvParser
      */
     static public function makeByFormat( string $format = null ) : AbstractCsvParser {
-        $controller = null;
-        if( $format == 'iphone' ){
-            $controller = self::getControllerByClassName(AppleContactsCsvParser::class);
-        }
-        else if( $format == 'android' ){
-            $controller = self::getControllerByClassName(GoogleCsvParser::class);
-        }
-        else {
-            $controller = self::getControllerByClassName(NullCsvParser::class);
-        }
+        $formats = self::getAvailableFileFormats();
+        $formatClass = array_reduce($formats, function($selectedClass, $formatData) use ($format){
+            if( $format == $formatData->format ){
+                $selectedClass = $formatData->parser;
+            }
+            return $selectedClass;
+        }, NullParser::class );
+        
+        $controller = new $formatClass();
         return $controller;
     }
 }

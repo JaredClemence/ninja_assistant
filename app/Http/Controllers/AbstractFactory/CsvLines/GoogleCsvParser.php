@@ -11,6 +11,10 @@ class GoogleCsvParser extends AbstractCsvParser {
 
     static public $format = "google_csv";
     static public $label = "Google CSV";
+    
+    public static function makeFormat(){
+        return parent::makeFileFormat(self::$format, self::$label, GoogleCsvParser::class);
+    }
 
     public function getFieldsFromCsvLine(string $lineText): array {
         $lines = $this->breakIntoColumnData($lineText);
