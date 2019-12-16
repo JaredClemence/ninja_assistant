@@ -63,6 +63,7 @@ class GoogleCsvParser extends AbstractCsvParser {
         $obj->notes = $this->getNotes($map);
         $obj->phones = $this->getPhones($map);
         $obj->birthday = $this->getBirthday($map);
+        $obj->email = $this->getEmail($map);
         return $obj;
     }
 
@@ -188,6 +189,18 @@ class GoogleCsvParser extends AbstractCsvParser {
             }
         } while (count($headers) || count($data));
         return $array;
+    }
+
+    private function getEmail($map) {
+        $emails = [];
+        for($i=1;$i<4;$i++){
+            $key = "E-mail $i - Value";
+            $email = $map[$key];
+            if( $email ){
+                $emails[] = $email;
+            }
+        }
+        return \join(', ', $emails);
     }
 
 }

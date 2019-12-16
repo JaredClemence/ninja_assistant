@@ -18,4 +18,5 @@ class ContactJsonObj {
     public $address;
     public $notes;
     public $phones;
+    public $email;
 }
