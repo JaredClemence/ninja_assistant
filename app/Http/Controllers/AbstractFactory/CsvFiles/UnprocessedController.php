@@ -29,7 +29,7 @@ class UnprocessedController extends AbstractController
         $this->parseFile();
         $this->makeIntermediaries();
         $this->saveIntermediaries();
-        $this->makeJobs();
+        $this->createNextJob();
         $this->setProcessedDate();
         $this->cleanup();
     }
@@ -67,10 +67,8 @@ class UnprocessedController extends AbstractController
         $upload->save();
     }
 
-    private function makeJobs() {
-        foreach( $this->intermediaries as $item ){
-            ConvertIntermideataryToJson::dispatch($item);
-        }
+    private function createNextJob() {
+        ConvertIntermideataryToJson::dispatch($this->intermediaries);
     }
 
     private function saveIntermediaries() {

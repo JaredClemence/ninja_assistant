@@ -16,17 +16,16 @@ class ConvertIntermideataryToJson implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /** @var IntermediateRecord */
-    private $intermediateRecord;
+    private $intermediateRecords;
     
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(IntermediateRecord $intermediateRecord)
+    public function __construct($intermediateRecords)
     {
-        $this->intermediateRecord = $intermediateRecord;
+        $this->intermediateRecords = collect($intermediateRecords);
     }
 
     /**
@@ -36,13 +35,27 @@ class ConvertIntermideataryToJson implements ShouldQueue
      */
     public function handle()
     {
-        $csvProcesser = CsvLineProcesserFactory::makeByFormat($this->intermediateRecord->format);
-        $header = $this->intermediateRecord->header;
-        $line = $this->intermediateRecord->line;
+        $csvProcesser = null;
+        foreach($this->intermediateRecords as $record ){
+            if( $csvProcesser === null ) $csvProcesser = CsvLineProcesserFactory::makeByFormat($this->intermediateRecord->format);
+            $this->handleRecord($csvProcesser, $record);
+        }
+        $this->intermediateRecords->save();
+        $this->sendEmailNotification();
+        
+    }
+
+    private function handleRecord(&$csvProcesser, &$record) {
+        $header = $record->header;
+        $line = $record->line;
         /* @var $csvProcesser AbstractCsvParser */
         $json = $csvProcesser->getJsonObject($header, $line);
         /* @var $json ContactJsonObj */
-        $this->intermediateRecord->json = serialize($json);
-        $this->intermediateRecord->save();
+        $record->json = serialize($json);
     }
+
+    private function sendEmailNotification() {
+        
+    }
+
 }

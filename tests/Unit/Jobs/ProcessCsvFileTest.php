@@ -47,7 +47,7 @@ class ProcessCsvFileTest extends TestCase {
         $this->assertIntermediatesCreated();
         $this->assertFileIsProcessed();
         $this->assertTrue($noException);
-        Queue::assertPushed(ConvertIntermideataryToJson::class, 3);
+        Queue::assertPushed(ConvertIntermideataryToJson::class, 1, "The system should create only one job to process intermediaries.");
     }
 
     public function assertLineCount($actual, $expected) {
