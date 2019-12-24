@@ -8,6 +8,9 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Clemence\Contact\IntermediateRecord;
+use App\Http\Controllers\AbstractFactory\CsvLineProcesserFactory;
+use App\Http\Controllers\AbstractFactory\CsvLines\AbstractCsvParser;
+use App\Http\Controllers\AbstractFactory\CsvLines\ContactJsonObj;
 
 class ConvertIntermideataryToJson implements ShouldQueue
 {
@@ -23,7 +26,7 @@ class ConvertIntermideataryToJson implements ShouldQueue
      */
     public function __construct(IntermediateRecord $intermediateRecord)
     {
-        //
+        $this->intermediateRecord = $intermediateRecord;
     }
 
     /**
@@ -33,6 +36,13 @@ class ConvertIntermideataryToJson implements ShouldQueue
      */
     public function handle()
     {
-        //
+        $csvProcesser = CsvLineProcesserFactory::makeByFormat($this->intermediateRecord->format);
+        $header = $this->intermediateRecord->header;
+        $line = $this->intermediateRecord->line;
+        /* @var $csvProcesser AbstractCsvParser */
+        $json = $csvProcesser->getJsonObject($header, $line);
+        /* @var $json ContactJsonObj */
+        $this->intermediateRecord->json = serialize($json);
+        $this->intermediateRecord->save();
     }
 }

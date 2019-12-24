@@ -41,4 +41,8 @@ class NullParser extends AbstractCsvParser {
         throw new Exception("Parser not found for the indicated file format.");
     }
 
+    public function breakIntoHeaderAndContacts(string $csvContent) {
+        $this->throwException();
+    }
+
 }

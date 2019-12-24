@@ -29,6 +29,14 @@ class MagazziOneParser extends AbstractCsvParser
         return $map;
     }
 
+    public function breakIntoHeaderAndContacts(string $csvContent) {
+        $lines = $this->breakFileIntoLines($csvContent);
+        if( $this->isSame($lines[0],self::$header)){
+            $lines = array_slice($lines, 1);
+        }
+        return [self::$header, $lines];
+    }
+
     public function getHeaderFromFileContnent(string $csvContent): string {
         return self::$header;
     }
@@ -71,6 +79,20 @@ class MagazziOneParser extends AbstractCsvParser
         $phone->number = $this->castString($number);
         $phone->type = 'Mobile';
         return $phone;
+    }
+
+    private function isSame($line, $header) {
+        $isSame = true;
+        $lineParts = $this->getFieldsFromCsvLine($line);
+        $headerParts = $this->getFieldsFromCsvLine($header);
+        $size = min( count($lineParts), count($headerParts));
+        for( $i=0; $i < $size; $i++ ){
+            if( $headerParts[$i] != $lineParts[$i]){
+                $isSame = false;
+                break;
+            }
+        }
+        return $isSame;
     }
 
 }

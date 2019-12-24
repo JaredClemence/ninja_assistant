@@ -10,6 +10,7 @@ use App\User;
 /**
  * @property int $user_id The user who uploaded the document
  * @property int $uploaded_file_id The file that was uploaded.
+ * @property string $format
  */
 class ContactCsvFile extends Model
 {

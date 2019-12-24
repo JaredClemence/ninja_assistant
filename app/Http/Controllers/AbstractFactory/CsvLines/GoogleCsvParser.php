@@ -47,10 +47,18 @@ class GoogleCsvParser extends AbstractCsvParser {
         $lines[] = $line;
         return $lines;
     }
+    
+
+    public function breakIntoHeaderAndContacts(string $csvContent) {
+        $lines = $this->breakFileIntoLines($csvContent);
+        $header = $lines[0];
+        $lines = array_slice($lines, 1);
+        return [$header, $lines];
+    }
 
     public function getHeaderFromFileContnent(string $csvContent): string {
-        $lines = $this->breakFileIntoLines($csvContent);
-        return $lines[0];
+        list( $header, $unused ) = $this->breakIntoHeaderAndContacts($csvContent);
+        return $header;
     }
 
     public function getJsonObject($headerText, $lineText): ContactJsonObj {

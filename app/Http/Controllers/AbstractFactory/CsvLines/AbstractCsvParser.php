@@ -13,6 +13,7 @@ abstract class AbstractCsvParser extends Controller
     abstract public function getFieldsFromCsvLine(string $lineText):array;
     abstract public function getJsonObject( $headerText, $lineText ):ContactJsonObj;
     abstract public function getFormatObject():FileFormat;
+    abstract public function breakIntoHeaderAndContacts(string $csvContent);
     
     protected static function makeFileFormat($format_text, $label, $parser) : FileFormat {
         $format = new FileFormat();

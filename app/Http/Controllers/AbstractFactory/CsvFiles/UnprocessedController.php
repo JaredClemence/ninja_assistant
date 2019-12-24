@@ -8,6 +8,8 @@ use App\Clemence\Contact\IntermediateRecord;
 use App\Jobs\ConvertIntermideataryToJson;
 use App\UploadedFile;
 use Exception;
+use App\Http\Controllers\AbstractFactory\CsvLineProcesserFactory;
+use App\Http\Controllers\AbstractFactory\CsvLines\AbstractCsvParser;
 
 /**
  * The abstract controller returns this for new and unprocessed contact 
@@ -41,10 +43,13 @@ class UnprocessedController extends AbstractController
     
     private function parseFile() {
         $content = $this->getFileContent();
-        $lines = $this->breakCsvContentIntoLines($content);
-        $this->header = $lines[0];
+        /* @var $csvParser AbstractCsvParser */
+        $format = $this->file->format;
+        $csvParser = CsvLineProcesserFactory::makeByFormat($format);
+        list( $header, $lines ) = $csvParser->breakIntoHeaderAndContacts($content);
+        $this->header = $header;
+        $this->contacts = $lines;
         $this->getDelegate()->reportHeader( $this->header );
-        $this->contacts = \array_slice( $lines, 1 );
     }
 
     private function makeIntermediaries() {
@@ -86,38 +91,6 @@ class UnprocessedController extends AbstractController
         $path = $file->full_path;
         $content = Storage::get($path);
         return $content;
-    }
-
-    private function breakCsvContentIntoLines($content) {
-        $lines = [];
-        $line = "";
-        $quoteCount = 0;
-        $quoteAlt = 0;
-        for($i=0; $i<strlen( $content); $i++ ){
-            $char = $content[$i];
-            if( $char == '"'){
-                if( $quoteAlt == 1 ){
-                    $line .= '"';
-                    $quoteAlt = 0;
-                }else if( $quoteCount == 0 ){
-                    $quoteCount = 1;
-                }else{
-                    $quoteCount = 0;
-                }
-            }
-            else if( $char == "\n" ){
-                if( $quoteCount == 0 ){
-                    $lines[] = $line;
-                    $line = "";
-                }
-            }
-            else {
-                $line .= $char;
-            }
-        }
-        $lines[] = $line;
-        $this->getDelegate()->reportLinesCount( count( $lines ) );
-        return $lines;
     }
 
     private function makeFromLine($line) {

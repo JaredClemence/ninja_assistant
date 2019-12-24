@@ -14,6 +14,7 @@ use Illuminate\Http\Testing\File;
 use App\Jobs\ConvertCsvFileToIntermediateFile;
 use App\Jobs\ConvertIntermideataryToJson;
 use Exception;
+use App\Http\Controllers\AbstractFactory\CsvLines\GoogleCsvParser;
 
 class ProcessCsvFileTest extends TestCase {
 
@@ -91,7 +92,7 @@ TEST;
         $file->save();
         $contactCsv = new ContactCsvFile();
         $contactCsv->fill([
-            'format' => 'android',
+            'format' => GoogleCsvParser::$format,
             'user_id' => 1,
             'uploaded_file_id' => $file->id,
             'accepted_terms' => true
