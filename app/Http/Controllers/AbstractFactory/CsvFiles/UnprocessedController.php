@@ -72,8 +72,15 @@ class UnprocessedController extends AbstractController
     }
 
     private function saveIntermediaries() {
+        $count = count($this->intermediaries);
+        $itemCount = 0;
+        $start = microtime(true);
+        \Illuminate\Support\Facades\Log::info( "Saving $count intermediary files.");
         foreach( $this->intermediaries as $item ){
             $item->save();
+            $time = microtime(true) - $start;
+            $itemCount++;
+            \Illuminate\Support\Facades\Log::info("Saved $itemCount item in $time seconds.");
         }
     }
     

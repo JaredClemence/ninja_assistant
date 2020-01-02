@@ -5,19 +5,22 @@
             <url>app/Http/Controllers/AbstractFactory/CsvLines/GoogleCsvParser.php</url>
             <bookmark id="1">
                 <name/>
-                <line>93</line>
+                <line>101</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/jaredclemence/git/ninja_assistant/app/Http/Controllers/AbstractFactory/CsvLines/ContactJsonObj.php</file>
-            <file>file:/Users/jaredclemence/git/ninja_assistant/app/Http/Controllers/AbstractFactory/CsvLines/GoogleCsvParser.php</file>
-            <file>file:/Users/jaredclemence/git/ninja_assistant/app/Http/Controllers/AbstractFactory/CsvLines/MagazziOneParser.php</file>
-            <file>file:/Users/jaredclemence/git/ninja_assistant/tests/Unit/Factories/GoogleCsvLineParserTest.php</file>
-            <file>file:/Users/jaredclemence/git/ninja_assistant/storage/app/uploads/Pep45HOeM63hcOEWqqggNbxjq5ujVAAMOW2u9thu.csv</file>
-            <file>file:/Users/jaredclemence/git/ninja_assistant/tests/Unit/Factories/MagazziOneLineParserTest.php</file>
+            <file>file:/Users/jaredclemence/git/ninja_assistant/app/Jobs/ConvertIntermideataryToJson.php</file>
+            <file>file:/Users/jaredclemence/git/ninja_assistant/app/Http/Controllers/ContactCsvFileController.php</file>
+            <file>file:/Users/jaredclemence/git/ninja_assistant/app/Providers/AppServiceProvider.php</file>
+            <file>file:/Users/jaredclemence/git/ninja_assistant/config/queue.php</file>
+            <file>file:/Users/jaredclemence/git/ninja_assistant/app/ContactCsvFile.php</file>
+            <file>file:/Users/jaredclemence/git/ninja_assistant/.env</file>
+            <file>file:/Users/jaredclemence/git/ninja_assistant/app/Jobs/ConvertCsvFileToIntermediateFile.php</file>
+            <file>file:/Users/jaredclemence/git/ninja_assistant/app/Http/Controllers/AbstractFactory/CsvFiles/UnprocessedController.php</file>
+            <file>file:/Users/jaredclemence/git/ninja_assistant/config/logging.php</file>
         </group>
     </open-files>
 </project-private>

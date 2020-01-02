@@ -14,7 +14,7 @@
 
 Auth::routes();
 
-Route::group(['middleware'=>['auth','has_contacts']], function(){
+Route::group(['middleware'=>['auth','intermediary_check','has_contacts']], function(){
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/', function () {
 	    return view('welcome');
@@ -32,11 +32,15 @@ Route::group(['middleware'=>['auth']], function(){
     Route::get('/contacts/iphone', function(){ 
         return view('contacts.upload.iphone');
     } )->name('iphone_instruction');
-    Route::get('/contacts/upload', function(){ 
-        return view('contacts.upload.upload');
-    } )->name('upload_csv');
+    Route::get('/contacts/upload', 'ContactCsvFileController@uploadForm' )->name('upload_csv');
     Route::post('/contacts/upload', 'ContactCsvFileController@upload');
+    Route::get('/contacts/verify', 'ContactCsvFileController@showIntermediaries');
     Route::get('/contacts/success', function(){
         return view('contacts.upload.success');
+    });
+    Route::get('/intermediate/{id}/delete','ContactCsvFileController@deleteIntermediaries');
+    Route::get('/intermediates/approve','ContactCsvFileController@approveIntermediateRecords');
+    Route::get('/intermediates/success', function(){
+        return view('contacts.upload.intermediate_success');
     });
 });

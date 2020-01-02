@@ -13,9 +13,10 @@ abstract class AbstractController extends Controller
     private $delegate;
     
     private function fakeDelegate(){
-        $this->delegate = new \stdClass();
-        $this->delegate->reportLinesCount = function($a){};
-        $this->delegate->reportHeader = function($a){};
+        $this->delegate = new class(){
+            public function reportLinesCount($a){}
+            public function reportHeader($a){}
+        };
     }
     
     protected function initializeDelegate() {

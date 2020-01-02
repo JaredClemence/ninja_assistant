@@ -62,6 +62,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'has_contacts' =>  \App\Http\Middleware\HasContacts::class,
+        'intermediary_check'=> \App\Http\Middleware\RedirectForIntermediaries::class,
     ];
 
     /**

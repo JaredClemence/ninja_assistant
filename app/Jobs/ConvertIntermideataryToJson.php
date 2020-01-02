@@ -15,6 +15,7 @@ use App\Http\Controllers\AbstractFactory\CsvLines\ContactJsonObj;
 class ConvertIntermideataryToJson implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    public $timeout = 500;
 
     private $intermediateRecords;
     
@@ -35,12 +36,19 @@ class ConvertIntermideataryToJson implements ShouldQueue
      */
     public function handle()
     {
+        $start = microtime(true);
         $csvProcesser = null;
+        $count = count($this->intermediateRecords);
+        $saved = 0;
+        \Illuminate\Support\Facades\Log::error("Starting work with $count records to process and save.");
         foreach($this->intermediateRecords as $record ){
-            if( $csvProcesser === null ) $csvProcesser = CsvLineProcesserFactory::makeByFormat($this->intermediateRecord->format);
+            if( $csvProcesser === null ) $csvProcesser = CsvLineProcesserFactory::makeByFormat($record->format);
             $this->handleRecord($csvProcesser, $record);
+            $record->save();
+            $timeSpent = microtime(true) - $start;
+            \Illuminate\Support\Facades\Log::error("Saved $saved out of $count in $timeSpent seconds.");
+            $count++;
         }
-        $this->intermediateRecords->save();
         $this->sendEmailNotification();
         
     }

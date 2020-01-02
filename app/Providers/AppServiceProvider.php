@@ -31,7 +31,15 @@ class AppServiceProvider extends ServiceProvider
             // $event->connectionName
             // $event->job
             // $event->exception
-            
+            $exception = $event->exception;
+            /* @var $exception Exception */
+            $file=$exception->getFile();
+            $line=$exception->getLine();
+            $trace=$exception->getTraceAsString();
+            $message=$exception->getMessage();
+            $formattedError = "Error thrown on line $line in $file with message:\n\t$message\n\nTrace:\n$trace";
+            \Illuminate\Support\Facades\Log::error($formattedError);
+            echo $formattedError;
         });
     }
 }

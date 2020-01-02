@@ -10,14 +10,15 @@ use App\Http\Controllers\UploadedFileController;
 use App\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use App\Clemence\Contact\IntermediateRecord;
+use App\Jobs\ConvertCsvFileToIntermediateFile;
 
 class ContactCsvFileController extends Controller {
 
     public function upload(Request $request) {
         $request->validate([
             'csv_upload'=>'required|file',
-            'format'=>['required',
-                Rule::in(['iphone','android'])],
+            'format'=>['required'],
             'terms'=>'accepted'
         ]);
         $uploadedFile = $this->storeFile($request);
@@ -29,7 +30,13 @@ class ContactCsvFileController extends Controller {
                     'accepted_terms'=> $request->input("terms",0)=="on"
         ]);
         $contactCsvFile->save();
+        ConvertCsvFileToIntermediateFile::dispatch($contactCsvFile);
         return redirect('/contacts/success');
+    }
+    
+    public function uploadForm(Request $request){
+        $formats = CsvFileControllerFactory::getAvailableFileFormats();
+        return view('contacts.upload.upload', compact('formats'));
     }
 
     /**
@@ -37,8 +44,34 @@ class ContactCsvFileController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
-        //
+    public function showIntermediaries() {
+        $user = Auth::user();
+        $records = self::getIntermediariesNeedingApproval($user);
+        return view('contacts.upload.preview',compact('records'));
+    }
+    
+    public function deleteIntermediaries(IntermediateRecord $id){
+        $id->delete();
+        return back();
+    }
+    
+    public function approveIntermediateRecords(){
+        $user = Auth::user();
+        $records = self::getIntermediariesNeedingApproval($user);
+        $records->each( function($record){
+            \App\Jobs\UpdateContactFromJson::dispatch($record);
+        } );
+        return redirect('/intermediates/success');
+    }
+    
+    static function getIntermediariesNeedingApproval($user){
+        
+        $records = IntermediateRecord::where([
+            ['user_id',$user->id],
+            ['finished',false],
+            ['json', '<>', '""']
+        ])->get();
+        return $records;
     }
 
     /**

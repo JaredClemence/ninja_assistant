@@ -30,8 +30,9 @@
                     <label><strong>Format</strong></label>
                     <select name="format" class="form-control">
                         <option value="">Select a contact format</option>
-                        <option value="iphone">iPhone</option>
-                        <option value="android">Android</option>
+                        @foreach($formats as $format)
+                        <option value="{{$format->format}}">{{$format->label}}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="form-check">

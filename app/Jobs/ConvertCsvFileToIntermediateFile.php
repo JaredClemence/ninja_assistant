@@ -12,7 +12,8 @@ use App\ContactCsvFile;
 class ConvertCsvFileToIntermediateFile implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
+    public $timeout = 500;
+    
     /** @var ContactCsvFile */
     private $file;
     private $delegate;
@@ -26,9 +27,6 @@ class ConvertCsvFileToIntermediateFile implements ShouldQueue
     {
         $this->file = $file;
         $this->delegate = $delegate;
-        if( $this->delegate == null ){
-            $this->fakeDelegate();
-        }
     }
 
     /**

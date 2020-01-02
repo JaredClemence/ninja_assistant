@@ -40,4 +40,8 @@ class User extends Authenticatable
     public function contacts(){
         return $this->hasMany('App\Clemence\Contact');
     }
+    
+    public function intermediaries(){
+        return $this->hasMany('App\Clemence\Contact\IntermediateRecord');
+    }
 }
