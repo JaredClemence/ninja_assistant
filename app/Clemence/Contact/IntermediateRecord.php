@@ -23,6 +23,7 @@ class IntermediateRecord extends Model
         'uploaded_file_id',
         'user_id'
     ];
+    
     protected $casts = [
         'finished'=>'boolean',
         'json'=>'json'

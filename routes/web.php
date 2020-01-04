@@ -17,7 +17,7 @@ Auth::routes();
 Route::group(['middleware'=>['auth','intermediary_check','has_contacts']], function(){
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/', function () {
-	    return view('welcome');
+	    return redirect('/ninja/daily');
 	});
     Route::get('/ninja/daily', function()
         { return "Daily Call List"; })->name('daily_call');

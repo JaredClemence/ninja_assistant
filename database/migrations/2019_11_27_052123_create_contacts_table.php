@@ -21,6 +21,7 @@ class CreateContactsTable extends Migration
             $table->text('note');
             $table->text('address');
             $table->date('birthday')->nullable();
+            $table->text('email');
             $table->integer('user_id');
             $table->integer('active')->default(0);
         });

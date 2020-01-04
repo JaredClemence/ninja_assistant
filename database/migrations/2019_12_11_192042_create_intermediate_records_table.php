@@ -20,8 +20,9 @@ class CreateIntermediateRecordsTable extends Migration
             $table->text('header');
             $table->text('line');
             $table->text('json');
-            $table->integer('user_id');
-            $table->integer('contact_csv_id');
+            $table->integer('user_id')->default(-1);
+            $table->integer('contact_csv_id')->default(-1);
+            $table->integer('contact_id')->default(-1);
             $table->integer('finished')->default(0);
         });
     }

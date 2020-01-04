@@ -68,7 +68,7 @@ class ContactCsvFileController extends Controller {
         
         $records = IntermediateRecord::where([
             ['user_id',$user->id],
-            ['finished',false],
+            ['finished','=',0],
             ['json', '<>', '""']
         ])->get();
         return $records;
