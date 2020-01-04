@@ -16,6 +16,8 @@ use App\Clemence\PhoneNumber;
  */
 class Contact extends Model
 {
+    protected $with = ['phones'];
+    
     public function phones(){
         return $this->hasMany(PhoneNumber::class);
     }

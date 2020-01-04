@@ -19,8 +19,14 @@ Route::group(['middleware'=>['auth','intermediary_check','has_contacts']], funct
     Route::get('/', function () {
 	    return redirect('/ninja/daily');
 	});
-    Route::get('/ninja/daily', function()
-        { return "Daily Call List"; })->name('daily_call');
+    Route::get('/ninja/daily', 'Ninja\NinjaController@showDaily')->name('daily_call');
+    Route::get('/ninja/force', 'Ninja\NinjaController@refreshDaily')->name('refresh_daily');
+    Route::get('/ninja/{contact}/skip', 'Ninja\NinjaController@skipContact')->name('skip_contact');
+    Route::get('/ninja/{contact}/deactivate', 'Ninja\NinjaController@deactivateContact')->name('deactivate_contact');
+    Route::get('/contacts/{contact}/edit', 'ContactCsvFileController@edit')->name('edit_contact');
+    Route::get('/ninja/{contact}/activity/{action}/create', 'Ninja\DailyActivityLogController@create')->name('create_activity_log');
+    Route::get('/ninja/{contact}/activity/{log}/edit', 'Ninja\DailyActivityLogController@edit')->name('edit_activity_log');
+    Route::post('/ninja/{contact}/activity/{log}/edit', 'Ninja\DailyActivityLogController@update');
 } );
 Route::group(['middleware'=>['auth']], function(){
     Route::get('/contacts/info', function(){ 
