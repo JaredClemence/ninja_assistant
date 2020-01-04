@@ -20,7 +20,7 @@ class MagazziOneParser extends AbstractCsvParser
     }
     
     public function breakFileIntoLines(string $csvContent): array {
-        return split("\n", $csvContent);;
+        return explode("\n", $csvContent);;
     }
 
     public function getFieldsFromCsvLine(string $lineText): array {

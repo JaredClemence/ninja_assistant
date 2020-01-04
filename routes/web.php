@@ -34,7 +34,7 @@ Route::group(['middleware'=>['auth']], function(){
     } )->name('iphone_instruction');
     Route::get('/contacts/upload', 'ContactCsvFileController@uploadForm' )->name('upload_csv');
     Route::post('/contacts/upload', 'ContactCsvFileController@upload');
-    Route::get('/contacts/verify', 'ContactCsvFileController@showIntermediaries');
+    Route::get('/contacts/verify', 'ContactCsvFileController@showIntermediaries')->name('contact_preview');
     Route::get('/contacts/success', function(){
         return view('contacts.upload.success');
     });

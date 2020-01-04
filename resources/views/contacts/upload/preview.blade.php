@@ -18,8 +18,7 @@
                     'phones'=>$phonesHtml,
                     'email'=>$json->email,
                     'address'=>$json->address,
-                    'notes'=>$json->notes,
-                    'birthday'=>$json->birthday,
+                    'notes'=>$json->notes
                 ];
                 @endphp
                 <div class="list-group-item">
