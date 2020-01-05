@@ -23,7 +23,7 @@ class OnlyNonFinishedIntermediatesCauseRedirectTest extends TestCase
         switch( $caseNo ){
             case 0:
                 $this->buildNoContacts($user);
-                $redirectEndpoint = '/contacts/info';
+                $redirectEndpoint = '/contacts/upload';
                 break;
             case 1:
                 $this->buildWithIntermediateRecords($user);
@@ -39,7 +39,9 @@ class OnlyNonFinishedIntermediatesCauseRedirectTest extends TestCase
                 $contacts = 4;
                 $intermediates = 2;
                 $this->buildWithFinishedContacts( $user, $contacts, $intermediates );
-                $redirectEndpoint = '/contacts/verify';
+                //changed after we introduced an email that sends users to the 
+                //verification page.
+                $redirectEndpoint = '/ninja/daily';
                 break;
         }
         $result = $this->actingAs($user)->get('/');

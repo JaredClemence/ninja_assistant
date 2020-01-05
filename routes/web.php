@@ -14,7 +14,7 @@
 
 Auth::routes();
 
-Route::group(['middleware'=>['auth','intermediary_check','has_contacts']], function(){
+Route::group(['middleware'=>['auth','has_contacts']], function(){
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/', function () {
 	    return redirect('/ninja/daily');
