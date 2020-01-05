@@ -12,6 +12,7 @@ use App\Contact;
 use App\Clemence\PhoneNumber;
 use App\Http\Controllers\AbstractFactory\CsvLines\ContactJsonObj;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UpdateContactFromJson implements ShouldQueue
 {

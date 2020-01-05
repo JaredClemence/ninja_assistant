@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\ContactCsvFile;
+use Illuminate\Support\Facades\Log;
 
 class ConvertCsvFileToIntermediateFile implements ShouldQueue
 {

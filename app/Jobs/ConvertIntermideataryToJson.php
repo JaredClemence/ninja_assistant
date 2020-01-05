@@ -11,6 +11,10 @@ use App\Clemence\Contact\IntermediateRecord;
 use App\Http\Controllers\AbstractFactory\CsvLineProcesserFactory;
 use App\Http\Controllers\AbstractFactory\CsvLines\AbstractCsvParser;
 use App\Http\Controllers\AbstractFactory\CsvLines\ContactJsonObj;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\VerifyContactDetailsNotice;
+use Illuminate\Support\Facades\Log;
+use App\User;
 
 class ConvertIntermideataryToJson implements ShouldQueue
 {
@@ -36,20 +40,34 @@ class ConvertIntermideataryToJson implements ShouldQueue
      */
     public function handle()
     {
+        Log::info("Logging activity in ConvertIntermideataryToJson job.");
         $start = microtime(true);
         $csvProcesser = null;
         $count = count($this->intermediateRecords);
         $saved = 0;
+        $user = null;
         \Illuminate\Support\Facades\Log::error("Starting work with $count records to process and save.");
         foreach($this->intermediateRecords as $record ){
             if( $csvProcesser === null ) $csvProcesser = CsvLineProcesserFactory::makeByFormat($record->format);
             $this->handleRecord($csvProcesser, $record);
             $record->save();
+            if($user===null){ 
+                $id = $record->user_id;
+                Log::info("User id extracted from record is $id.");
+                $user = User::find($record->user_id);
+                if( $user === null ){
+                    Log::info("User not found with id $id.");
+                }else{
+                    $name = $user->name;
+                    Log::info("User loaded with name: $name.");
+                }
+            }
             $timeSpent = microtime(true) - $start;
             \Illuminate\Support\Facades\Log::error("Saved $saved out of $count in $timeSpent seconds.");
             $count++;
         }
-        $this->sendEmailNotification();
+        $this->sendEmailNotification($user);
+        Log::info("Completing log of activity in ConvertIntermideataryToJson job.");
         
     }
 
@@ -62,8 +80,10 @@ class ConvertIntermideataryToJson implements ShouldQueue
         $record->json = serialize($json);
     }
 
-    private function sendEmailNotification() {
-        
+    private function sendEmailNotification($user) {
+        if( is_a($user, User::class)){
+            Mail::send(new VerifyContactDetailsNotice($user));
+        }
     }
 
 }

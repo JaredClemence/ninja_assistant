@@ -12,12 +12,17 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/Users/jaredclemence/git/ninja_assistant/app/Mail/VerifyContactDetailsNotice.php</file>
+            <file>file:/Users/jaredclemence/git/ninja_assistant/app/Jobs/ConvertIntermideataryToJson.php</file>
+            <file>file:/Users/jaredclemence/git/ninja_assistant/storage/logs/laravel.log</file>
             <file>file:/Users/jaredclemence/git/ninja_assistant/app/Http/Controllers/ContactCsvFileController.php</file>
             <file>file:/Users/jaredclemence/git/ninja_assistant/routes/web.php</file>
-            <file>file:/Users/jaredclemence/git/ninja_assistant/app/Jobs/UpdateContactFromJson.php</file>
-            <file>file:/Users/jaredclemence/git/ninja_assistant/resources/views/contacts/upload/preview.blade.php</file>
-            <file>file:/Users/jaredclemence/git/ninja_assistant/app/Clemence/Contact/IntermediateRecord.php</file>
-            <file>file:/Users/jaredclemence/git/ninja_assistant/resources/views/contacts/upload/intermediate_success.blade.php</file>
+            <file>file:/Users/jaredclemence/git/ninja_assistant/tests/Unit/Jobs/ProcessCsvFileTest.php</file>
+            <file>file:/Users/jaredclemence/git/ninja_assistant/app/Http/Controllers/Ninja/NinjaController.php</file>
+            <file>file:/Users/jaredclemence/git/ninja_assistant/app/User.php</file>
+            <file>file:/Users/jaredclemence/git/ninja_assistant/resources/views/email/text/complete.blade.php</file>
+            <file>file:/Users/jaredclemence/git/ninja_assistant/resources/views/email/text/verify.blade.php</file>
+            <file>file:/Users/jaredclemence/git/ninja_assistant/app/Mail/ContactUpdateIsComplete.php</file>
         </group>
     </open-files>
 </project-private>
