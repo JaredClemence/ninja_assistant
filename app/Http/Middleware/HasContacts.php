@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 class HasContacts
 {
 
-    const endpoint_on_failure = "upload_contacts_instruction";
+    const endpoint_on_failure = "upload_csv";
 
     /**
      * Handle an incoming request.
