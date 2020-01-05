@@ -46,7 +46,7 @@ class ConvertIntermideataryToJson implements ShouldQueue
         $count = count($this->intermediateRecords);
         $saved = 0;
         $user = null;
-        \Illuminate\Support\Facades\Log::error("Starting work with $count records to process and save.");
+        Log::info("Starting work with $count records to process and save.");
         foreach($this->intermediateRecords as $record ){
             if( $csvProcesser === null ) $csvProcesser = CsvLineProcesserFactory::makeByFormat($record->format);
             $this->handleRecord($csvProcesser, $record);
@@ -63,12 +63,11 @@ class ConvertIntermideataryToJson implements ShouldQueue
                 }
             }
             $timeSpent = microtime(true) - $start;
-            \Illuminate\Support\Facades\Log::error("Saved $saved out of $count in $timeSpent seconds.");
+            Log::error("Saved $saved out of $count in $timeSpent seconds.");
             $count++;
         }
         $this->sendEmailNotification($user);
         Log::info("Completing log of activity in ConvertIntermideataryToJson job.");
-        
     }
 
     private function handleRecord(&$csvProcesser, &$record) {
