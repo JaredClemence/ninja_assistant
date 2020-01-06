@@ -16,7 +16,7 @@
                     <div class="row">
                 
                     <section class="col-12 col-sm-6">
-                {{$caller->name}}
+                        {{$caller->name}}<br/><em>{{$caller->note}}</em>
                     </section>
                     <section class="col-12 col-sm-6">
                 @foreach($caller->phones as $phone)
@@ -54,7 +54,7 @@
             <div class="list-group-item">
                 <div class="col-12">
                 {{$mailer->name}}<br/>
-                {{$mailer->address}}
+                {{$mailer->address}}<br/><em>{{$mailer->note}}</em>
                 </div>
                 <div class="col-12">
                 <a class="btn btn-primary btn-block" href="{{route('create_activity_log',['contact'=>$mailer,'action'=>'mail'])}}">Make Notes</a>
