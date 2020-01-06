@@ -84,11 +84,13 @@ class Daily extends Controller {
         foreach ($all as $contact) {
             $contacts->attach($contact);
         }
-        $calls = $all->random(self::$call_count);
+        $selectCallers = min($all->count(),self::$call_count);
+        $calls = $all->random($selectCallers);
         $remaining = $all->reject(function($item) use ($calls) {
             return $calls->contains($item);
         });
-        $mail = $remaining->random(self::$mail_count);
+        $selectMailers = min($remaining->count(), self::$mail_count);
+        $mail = $remaining->random($selectMailers);
         foreach ($calls as $call) {
             $rand = rand(0, 1000);
             $callQueue->insert($call, $rand);
