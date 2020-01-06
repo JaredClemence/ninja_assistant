@@ -33,7 +33,8 @@ class NinjaAssistantSignupConfirmation extends Mailable
      */
     public function build()
     {
-        $builder = $this->text('email.text.welcome')->to($this->user->email);
+        $subject = "Ninja Assistant - Thank you for registering a new account.";
+        $builder = $this->text('email.text.welcome')->to($this->user->email)->from(env("MAIL_USERNAME"))->subject($subject);
         $stringEmails = array_map( function( $email ){
             extract($email);
             if( $name ){
