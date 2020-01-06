@@ -23,7 +23,7 @@ class EnvironmentTest extends TestCase
      */
     public function testMailFrom()
     {
-        $this->assertEquals("jaredclemence@gmail.com",env("MAIL_FROM"));
+        $this->assertEquals("jaredclemence@gmail.com",env("MAIL_FROM_ADDRESS"));
     }
     
     public function testSendMail(){
