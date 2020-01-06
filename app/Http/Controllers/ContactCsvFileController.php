@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use App\Clemence\Contact\IntermediateRecord;
 use App\Jobs\ConvertCsvFileToIntermediateFile;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactUpdateIsComplete;
 
 class ContactCsvFileController extends Controller {
 
@@ -61,6 +63,8 @@ class ContactCsvFileController extends Controller {
         $records->each( function($record){
             \App\Jobs\UpdateContactFromJson::dispatch($record);
         } );
+        $completionEmail = new ContactUpdateIsComplete($user);
+        Mail::queue($completionEmail);
         return redirect('/intermediates/success');
     }
     
