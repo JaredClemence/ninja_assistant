@@ -14,8 +14,9 @@
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contacts</a>
         <div class="dropdown-menu" aria-labelledby="dropdown04">
+          <a class="dropdown-item" href="{{route('create_contact')}}">Create Contact</a>
+          <a class="dropdown-item" href="{{route('index_contacts')}}">Show Contacts</a>
           <a class="dropdown-item" href="{{route('upload_csv')}}">Upload Contacts</a>
-          <a class="dropdown-item" href="{{route('contact_preview')}}">Preview</a>
         </div>
       </li>
     </ul>
