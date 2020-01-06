@@ -158,6 +158,7 @@ class Daily extends Controller {
         if(is_array($array)){
             foreach($array as $item){
                 \extract($item);
+                $data = $data->find($data->id); //update model to latest database entry
                 $queue->insert($data, $priority);
             }
         }
