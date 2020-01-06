@@ -18,6 +18,14 @@ class Contact extends Model
 {
     protected $with = ['phones'];
     
+    protected $fillable = [
+        'note',
+        'email',
+        'address',
+        'active',
+        'name'
+    ];
+    
     public function phones(){
         return $this->hasMany(PhoneNumber::class);
     }
