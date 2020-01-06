@@ -23,7 +23,7 @@ class CreateContactsTable extends Migration
             $table->date('birthday')->nullable();
             $table->text('email');
             $table->integer('user_id');
-            $table->integer('active')->default(0);
+            $table->integer('active')->default(1);
         });
     }
 
