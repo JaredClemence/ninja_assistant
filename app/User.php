@@ -38,7 +38,7 @@ class User extends Authenticatable
     ];
     
     public function contacts(){
-        return $this->hasMany('App\Clemence\Contact');
+        return $this->hasMany('App\Contact');
     }
     
     public function intermediaries(){
