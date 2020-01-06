@@ -34,7 +34,7 @@ class VerifyContactDetailsNotice extends Mailable
     public function build()
     {
         $subject = "Ninja Assistant - Please verify your contact list before we finish.";
-        $builder = $this->from(env('MAIL_FROM'))->to($this->user->email)->subject($subject)->text('email.text.verify');
+        $builder = $this->from(env('MAIL_FROM_ADDRESS'))->to($this->user->email)->subject($subject)->text('email.text.verify');
         $stringEmails = array_map( function( $email ){
             extract($email);
             if( $name ){
