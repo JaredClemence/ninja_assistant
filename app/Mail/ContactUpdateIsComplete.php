@@ -34,8 +34,9 @@ class ContactUpdateIsComplete extends Mailable
     public function build()
     {
         $subject = "Ninja Assistant - Site is ready to use, because the system has set up your contacts!";
-        $from = "jaredclemence@gmail.com";
-        $builder = $this->from($from)->to($this->user->email)->subject($subject)->text('email.text.complete');
+        $replyTo = "jaredclemence@theninjaassistant.com";
+        $from="donotreply@theninjaassistant.com";
+        $builder = $this->replyTo($replyTo)->from($from)->to($this->user->email)->subject($subject)->text('email.text.complete');
         $stringEmails = array_map( function( $email ){
             extract($email);
             if( $name ){
