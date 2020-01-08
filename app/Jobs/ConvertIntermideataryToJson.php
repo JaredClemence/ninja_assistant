@@ -16,21 +16,48 @@ use App\Mail\VerifyContactDetailsNotice;
 use Illuminate\Support\Facades\Log;
 use App\User;
 
-class ConvertIntermideataryToJson implements ShouldQueue
-{
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    public $timeout = 500;
+class ConvertIntermideataryToJson implements ShouldQueue {
 
+    use Dispatchable,
+        InteractsWithQueue,
+        Queueable,
+        SerializesModels;
+
+    public $timeout = 500;
     private $intermediateRecords;
-    
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($intermediateRecords)
-    {
+    public function __construct($intermediateRecords) {
+        list($is_array, $is_record) = $this->testRecordSet($intermediateRecords);
+        Log::info("Creating a new job to convert the intermediary records to JSON.");
+        Log::info("The incoming data " . ($is_array ? "is" : "is not") . " an array.");
+        Log::info("Every record of the incoming data " . ($is_record ? "is" : "is not") . " an IntermediateRecord object.");
+        if (!$is_record) {
+            foreach ($intermediateRecords as $i => $record) {
+                $type = "unknown";
+                if (is_object($record)) {
+                    $type = get_class($record);
+                } else if (is_string($record) && !is_numeric($record)) {
+                    $type = "non-numeric string";
+                } else if (is_numeric($record)) {
+                    $type = "number";
+                }
+                Log::info("The record in array possition $i is a $type.");
+            }
+        }
         $this->intermediateRecords = collect($intermediateRecords);
+    }
+
+    public function __wakeup() {
+        parent::__wakeup();
+        list($is_array, $is_record) = $this->testRecordSet($this->intermediateRecords);
+        Log::info("Waking up job to convert intermediate records to JSON.");
+        Log::info("The stored data " . ($is_array ? "is" : "is not") . " an array.");
+        Log::info("Every record of the stored data " . ($is_record ? "is" : "is not") . " an IntermediateRecord object.");
     }
 
     /**
@@ -38,36 +65,44 @@ class ConvertIntermideataryToJson implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
-    {
-        Log::info("Logging activity in ConvertIntermideataryToJson job.");
-        $start = microtime(true);
-        $csvProcesser = null;
-        $count = count($this->intermediateRecords);
-        $saved = 0;
-        $user = null;
-        Log::info("Starting work with $count records to process and save.");
-        foreach($this->intermediateRecords as $record ){
-            if( $csvProcesser === null ) $csvProcesser = CsvLineProcesserFactory::makeByFormat($record->format);
-            $this->handleRecord($csvProcesser, $record);
-            $record->save();
-            if($user===null){ 
-                $id = $record->user_id;
-                Log::info("User id extracted from record is $id.");
-                $user = User::find($record->user_id);
-                if( $user === null ){
-                    Log::info("User not found with id $id.");
-                }else{
-                    $name = $user->name;
-                    Log::info("User loaded with name: $name.");
+    public function handle() {
+        try {
+            Log::info("ConvertIntermideataryToJson::handle() method called.");
+            $start = microtime(true);
+            $csvProcesser = null;
+            $count = count($this->intermediateRecords);
+            $saved = 0;
+            $user = null;
+            Log::info("Starting work with $count records to process and save.");
+            foreach ($this->intermediateRecords as $record) {
+                if ($csvProcesser === null)
+                    $csvProcesser = CsvLineProcesserFactory::makeByFormat($record->format);
+                $this->handleRecord($csvProcesser, $record);
+                $record->save();
+                if ($user === null) {
+                    $id = $record->user_id;
+                    Log::info("User id extracted from record is $id.");
+                    $user = User::find($record->user_id);
+                    if ($user === null) {
+                        Log::info("User not found with id $id.");
+                    } else {
+                        $name = $user->name;
+                        Log::info("User loaded with name: $name.");
+                    }
                 }
+                $timeSpent = microtime(true) - $start;
+                Log::error("Saved $saved out of $count in $timeSpent seconds.");
+                $count++;
             }
-            $timeSpent = microtime(true) - $start;
-            Log::error("Saved $saved out of $count in $timeSpent seconds.");
-            $count++;
+            Log::info("Sending email notification.");
+            $this->sendEmailNotification($user);
+            Log::info("ConvertIntermideataryToJson::handle() method completed successfully.");
+        } catch (Exception $e) {
+            $exceptionMessage = $e->getMessage();
+            $file = $e->getFile();
+            $line = $e->getLine();
+            Log::error($exceptionMessage . " thrown from $file at $line.");
         }
-        $this->sendEmailNotification($user);
-        Log::info("Completing log of activity in ConvertIntermideataryToJson job.");
     }
 
     private function handleRecord(&$csvProcesser, &$record) {
@@ -80,9 +115,20 @@ class ConvertIntermideataryToJson implements ShouldQueue
     }
 
     private function sendEmailNotification($user) {
-        if( is_a($user, User::class)){
+        if (is_a($user, User::class)) {
             Mail::send(new VerifyContactDetailsNotice($user));
         }
+    }
+
+    private function testRecordSet($intermediateRecords) {
+        $is_array = is_array($intermediateRecords);
+        $is_record = array_reduce($intermediateRecords, function($carryover, $item) {
+            if (is_a($item, IntermediateRecord::class) == false) {
+                $carryover = false;
+            }
+            return $carryover;
+        }, true);
+        return [$is_array, $is_record];
     }
 
 }
