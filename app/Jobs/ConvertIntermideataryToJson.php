@@ -32,7 +32,8 @@ class ConvertIntermideataryToJson implements ShouldQueue {
      * @return void
      */
     public function __construct($intermediateRecords) {
-        list($is_array, $is_record) = $this->testRecordSet($intermediateRecords);
+        $array = $this->convertToArray( $intermediateRecords );
+        list($is_array, $is_record) = $this->testRecordSet($array);
         Log::info("Creating a new job to convert the intermediary records to JSON.");
         Log::info("The incoming data " . ($is_array ? "is" : "is not") . " an array.");
         Log::info("Every record of the incoming data " . ($is_record ? "is" : "is not") . " an IntermediateRecord object.");
@@ -49,7 +50,7 @@ class ConvertIntermideataryToJson implements ShouldQueue {
                 Log::info("The record in array possition $i is a $type.");
             }
         }
-        $this->intermediateRecords = collect($intermediateRecords);
+        $this->intermediateRecords = $array;
     }
 
     public function __wakeup() {
@@ -129,6 +130,21 @@ class ConvertIntermideataryToJson implements ShouldQueue {
             return $carryover;
         }, true);
         return [$is_array, $is_record];
+    }
+
+    private function convertToArray($intermediateRecords) {
+        $array = $intermediateRecords;
+        if( is_array($intermediateRecords) == false ){
+            if(method_exists($intermediateRecords, "all")){
+                $array = $intermediateRecords->all();
+            }else if(is_a($intermediateRecords, \Traversable::class)){
+                $array = [];
+                foreach( $intermediateRecords as $item ){
+                    $array[] = $item;
+                }
+            }
+        }
+        return $array;
     }
 
 }
