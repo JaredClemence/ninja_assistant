@@ -27,7 +27,7 @@ class OnlyNonFinishedIntermediatesCauseRedirectTest extends TestCase
                 break;
             case 1:
                 $this->buildWithIntermediateRecords($user);
-                $redirectEndpoint = '/contacts/verify';
+                $redirectEndpoint = '/contacts/upload';
                 break;
             case 2:
                 $contacts = 4;
