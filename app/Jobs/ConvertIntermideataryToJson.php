@@ -54,7 +54,6 @@ class ConvertIntermideataryToJson implements ShouldQueue {
     }
 
     public function __wakeup() {
-        parent::__wakeup();
         list($is_array, $is_record) = $this->testRecordSet($this->intermediateRecords);
         Log::info("Waking up job to convert intermediate records to JSON.");
         Log::info("The stored data " . ($is_array ? "is" : "is not") . " an array.");
@@ -80,6 +79,7 @@ class ConvertIntermideataryToJson implements ShouldQueue {
                     $csvProcesser = CsvLineProcesserFactory::makeByFormat($record->format);
                 $this->handleRecord($csvProcesser, $record);
                 $record->save();
+                $saved++;
                 if ($user === null) {
                     $id = $record->user_id;
                     Log::info("User id extracted from record is $id.");
