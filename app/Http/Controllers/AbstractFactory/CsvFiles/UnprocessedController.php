@@ -74,7 +74,10 @@ class UnprocessedController extends AbstractController
             if( $user == null ){
                 $user = \App\User::find( $intermediate->user_id);
             }
-            SingleIntermediaryToJson::dispatch($intermediate);
+            $intermediate = IntermediateRecord::find($intermediate->id);
+            if( $intermediate ){
+                SingleIntermediaryToJson::dispatch($intermediate);
+            }
         }
         if( $user != null ){
             Mail::queue(new VerifyContactDetailsNotice($user));
