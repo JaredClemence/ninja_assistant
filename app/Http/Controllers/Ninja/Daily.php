@@ -15,6 +15,8 @@ class Daily extends Controller {
 
     /** @var User */
     private $user;
+    
+    public $didContact;
 
     /** @var SplObjectStorage */
     private $contacts;
@@ -30,6 +32,10 @@ class Daily extends Controller {
     public function __construct(User $user) {
         $this->user = $user;
         $this->loadSessionData();
+    }
+    
+    public function didContact(Contact $contact){
+        return $this->didContact->contains($contact);
     }
 
     public function fresh() {
@@ -62,6 +68,7 @@ class Daily extends Controller {
             $this->calls = $this->readPriorityQueueFromSession("calls");
             $this->mail = $this->readPriorityQueueFromSession("mail");
         }
+        $this->updateCallLogs();
     }
 
     private function readSession($name) {
@@ -163,6 +170,22 @@ class Daily extends Controller {
             }
         }
         return $queue;
+    }
+
+    private function updateCallLogs() {
+        $calls = clone( $this->calls );
+        $mails = clone( $this->mail );
+        $all = collect();
+        foreach($calls as $call){ $all->add($call); }
+        foreach($mails as $mail){ $all->add($mail); }
+        $this->didContact = $all->filter(function($contact){ return $contact!==null; })->filter( function( $contact ){
+            $latestNote = $contact->latestNote();
+            if( $latestNote ){
+                return Carbon::now()->subHours(24)->lt($latestNote->created_at);
+            }else{
+                return false;
+            }
+        } );
     }
 
 }

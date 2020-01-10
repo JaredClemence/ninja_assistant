@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Clemence\PhoneNumber;
+use App\DailyActivityLogEntry;
 
 /**
  * @property string $name Person name
@@ -16,7 +17,9 @@ use App\Clemence\PhoneNumber;
  */
 class Contact extends Model
 {
-    protected $with = ['phones'];
+    protected $with = [
+        'phones'
+    ];
     
     protected $fillable = [
         'note',
@@ -26,6 +29,15 @@ class Contact extends Model
         'name'
     ];
     
+    public function notes(){
+        return $this->hasMany(DailyActivityLogEntry::class);
+    }
+    
+    public function latestNote(){
+        return DailyActivityLogEntry::where('contact_id','=', $this->id)->latest()->get()->first();
+    }
+
+
     public function phones(){
         return $this->hasMany(PhoneNumber::class);
     }

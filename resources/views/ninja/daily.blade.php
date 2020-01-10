@@ -11,7 +11,10 @@
         <div class="col-12">
         <div class="list-group">
             @foreach($daily->calls as $caller)
-            <div class="list-group-item">
+            @php
+            $didCall = $daily->didContact->contains('id','=',$caller->id);
+            @endphp
+            <div class="list-group-item {{$didCall?"list-group-item-success":""}}">
                 <section class="col-12">
                     <div class="row">
                 
@@ -51,7 +54,10 @@
         <div class="col-12">
     <div class="list-group">
             @foreach($daily->mail as $mailer)
-            <div class="list-group-item">
+            @php
+            $didCall = $daily->didContact->contains('id','=',$mailer->id);
+            @endphp
+            <div class="list-group-item {{$didCall?"list-group-item-success":""}}">
                 <div class="col-12">
                 {{$mailer->name}}<br/>
                 {{$mailer->address}}<br/><em>{{$mailer->note}}</em>
