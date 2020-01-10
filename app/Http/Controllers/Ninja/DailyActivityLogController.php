@@ -35,11 +35,14 @@ class DailyActivityLogController extends Controller
             'contact_id'=>$contact->id,
             'action'=>$action
         ];
-        $entry = DailyActivityLogEntry::whereDate('created_at', Carbon::today())->where($params)->get()->first();
+        $entry = DailyActivityLogEntry::whereDate('created_at', Carbon::today())->where($params)->latest()->get()->first();
         if( !$entry ){
             $entry = DailyActivityLogEntry::create($params);
+            return $this->edit($contact, $entry);
+        }else{
+            return redirect(route('edit_activity_log',['contact'=>$contact,'log'=>$entry]));
         }
-        return $this->edit($contact, $entry);
+        
     }
 
     /**
@@ -79,7 +82,7 @@ class DailyActivityLogController extends Controller
     {
         $updates = $request->all('family','occupation','recreation','dreams');
         $log->fill($updates);
-        $log->save();
+        $saved = $log->save();
         return redirect(route('daily_call'));
     }
 

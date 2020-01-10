@@ -31,7 +31,7 @@
             @else
             No previous notes for {{$varname}}
             @endif
-                <input id='{{$key}}' name='{{$key}}' size='100' class='form-control' />
+                <input id='{{$key}}' name='{{$key}}' size='100' class='form-control' value='{{$log->{$key}!==null?$log->{$key}:""}}'/>
             </div>
             
             @endforeach
