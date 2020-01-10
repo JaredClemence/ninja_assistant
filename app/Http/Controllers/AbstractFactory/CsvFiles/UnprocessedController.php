@@ -11,6 +11,7 @@ use App\Http\Controllers\AbstractFactory\CsvLineProcesserFactory;
 use App\Http\Controllers\AbstractFactory\CsvLines\AbstractCsvParser;
 use App\Jobs\SingleIntermediaryToJson;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\VerifyContactDetailsNotice;
 
 /**
  * The abstract controller returns this for new and unprocessed contact 
