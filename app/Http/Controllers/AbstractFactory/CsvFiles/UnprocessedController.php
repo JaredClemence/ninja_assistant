@@ -5,7 +5,6 @@ namespace App\Http\Controllers\AbstractFactory\CsvFiles;
 use App\Http\Controllers\AbstractFactory\CsvFiles\AbstractController;
 use Illuminate\Support\Facades\Storage;
 use App\Clemence\Contact\IntermediateRecord;
-use App\Jobs\ConvertIntermideataryToJson;
 use App\UploadedFile;
 use Exception;
 use App\Http\Controllers\AbstractFactory\CsvLineProcesserFactory;
