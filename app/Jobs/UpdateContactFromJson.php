@@ -130,5 +130,13 @@ class UpdateContactFromJson implements ShouldQueue
     private function updateContactId() {
         $this->intermediateRecord->contact_id = $this->contact->id;
     }
+    
+    public function failed(\Exception $exception){
+        Log::info("Job failed: UpdateContactFromJson");
+        Log::error($exception->getMessage());
+        Log::debug("Failure occured in file: " . $exception->getFile());
+        Log::debug("Failure occured on line: " . $exception->getLine());
+        Log::debug("Debug backtace: " . $exception->getTraceAsString());
+    }
 
 }

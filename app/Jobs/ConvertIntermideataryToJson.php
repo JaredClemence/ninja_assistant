@@ -146,5 +146,15 @@ class ConvertIntermideataryToJson implements ShouldQueue {
         }
         return $array;
     }
+    
+    
+    
+    public function failed(\Exception $exception){
+        Log::info("Job failed: ConvertIntermideataryToJson");
+        Log::error($exception->getMessage());
+        Log::debug("Failure occured in file: " . $exception->getFile());
+        Log::debug("Failure occured on line: " . $exception->getLine());
+        Log::debug("Debug backtace: " . $exception->getTraceAsString());
+    }
 
 }

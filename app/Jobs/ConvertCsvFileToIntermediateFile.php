@@ -39,5 +39,14 @@ class ConvertCsvFileToIntermediateFile implements ShouldQueue
     {
         $this->file->process($this->delegate);
     }
+    
+    
+    public function failed(\Exception $exception){
+        Log::info("Job failed: ConvertCsvFileToIntermediateFile");
+        Log::error($exception->getMessage());
+        Log::debug("Failure occured in file: " . $exception->getFile());
+        Log::debug("Failure occured on line: " . $exception->getLine());
+        Log::debug("Debug backtace: " . $exception->getTraceAsString());
+    }
 
 }
