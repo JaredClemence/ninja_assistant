@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Clemence\Contact\IntermediateRecord;
+use App\Http\Controllers\AbstractFactory\CsvLineProcesserFactory;
 
 class SingleIntermediaryToJson implements ShouldQueue
 {
