@@ -10,6 +10,7 @@ use App\UploadedFile;
 use Exception;
 use App\Http\Controllers\AbstractFactory\CsvLineProcesserFactory;
 use App\Http\Controllers\AbstractFactory\CsvLines\AbstractCsvParser;
+use App\Jobs\SingleIntermediaryToJson;
 
 /**
  * The abstract controller returns this for new and unprocessed contact 
@@ -68,7 +69,16 @@ class UnprocessedController extends AbstractController
     }
 
     private function createNextJob() {
-        ConvertIntermideataryToJson::dispatch($this->intermediaries);
+        $user = null;
+        foreach($this->intermediaries as $intermediate){
+            if( $user == null ){
+                $user = \App\User::find( $intermediate->user_id);
+            }
+            SingleIntermediaryToJson::dispatch($intermediate);
+        }
+        if( $user != null ){
+            Mail::queue(new VerifyContactDetailsNotice($user));
+        }
     }
 
     private function saveIntermediaries() {
