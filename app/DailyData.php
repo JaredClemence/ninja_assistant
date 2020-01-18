@@ -59,7 +59,7 @@ class DailyData extends Model
     }
 
     private function makeIterableModelsIntoString($list) {
-        clone $list;
+        $list = clone $list;
         $data = [];
         foreach( $list as $item ){
             $id = $item->id;
