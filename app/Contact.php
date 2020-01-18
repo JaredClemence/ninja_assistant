@@ -26,7 +26,8 @@ class Contact extends Model
         'email',
         'address',
         'active',
-        'name'
+        'name',
+        'user_id'
     ];
     
     public function notes(){

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\User;
 use Carbon\Carbon;
 use App\Contact;
+use App\DailyData;
 
 class Daily extends Controller {
 
@@ -17,14 +18,8 @@ class Daily extends Controller {
     private $user;
     
     public $didContact;
-
-    /** @var SplObjectStorage */
     private $contacts;
-
-    /** @var SplPriorityQueue */
     public $calls;
-
-    /** @var SplPriorityQueue */
     public $mail;
     static $call_count = 13;
     static $mail_count = 2;
@@ -41,7 +36,6 @@ class Daily extends Controller {
     public function fresh() {
         $this->generateNewData();
         $this->saveSessionData();
-        $this->saveExpirationData();
     }
 
     public function replaceCaller($contact) {
@@ -59,65 +53,30 @@ class Daily extends Controller {
     }
 
     private function loadSessionData() {
-        $now = new Carbon("now");
-        $expires = $this->readSession("expires");
-        if ($expires === null || $now->gt($expires)) {
+        $data = DailyData::initToday($this->user);
+        if (count($data->readCallList())==0) {
             $this->fresh();
         } else {
-            $this->contacts = $this->readSession("contacts");
-            $this->calls = $this->readPriorityQueueFromSession("calls");
-            $this->mail = $this->readPriorityQueueFromSession("mail");
+            $callListData = $data->readCallList();
+            $mailListData = $data->readMailList();
+            $this->calls = $this->readContactIdArray($callListData);
+            $this->mail = $this->readContactIdArray($mailListData);
         }
         $this->updateCallLogs();
     }
 
-    private function readSession($name) {
-        $value = unserialize(session(self::$session_prefix . $name));
-        if ($value === false)
-            $value = null;
-        return $value;
-    }
-
-    private function writeSession($name, $serializableData) {
-        session([self::$session_prefix . $name => serialize($serializableData)]);
-    }
-
     private function generateNewData() {
-        $this->contacts = $contacts = new \SplObjectStorage();
-        $this->calls = $callQueue = new \SplPriorityQueue();
-        $this->mail = $mailQueue = new \SplPriorityQueue();
-
-        $all = Contact::where('active', '=', 1)->get();
-        foreach ($all as $contact) {
-            $contacts->attach($contact);
-        }
-        $selectCallers = min($all->count(),self::$call_count);
-        $calls = $all->random($selectCallers);
-        $remaining = $all->reject(function($item) use ($calls) {
-            return $calls->contains($item);
-        });
-        $selectMailers = min($remaining->count(), self::$mail_count);
-        $mail = $remaining->random($selectMailers);
-        foreach ($calls as $call) {
-            $rand = rand(0, 1000);
-            $callQueue->insert($call, $rand);
-        }
-        foreach ($mail as $mailItem) {
-            $rand = rand(0, 1000);
-            $mailQueue->insert($mailItem, $rand);
-        }
+        $this->initObjectVariables();
+        $this->loadAvailableContacts();
+        $this->pickRandomContactsToCall();
+        $this->pickRandomContactsToMail();
     }
 
     private function saveSessionData() {
-        $this->writeSession("contacts", $this->contacts);
-        $this->writePriorityQueueToSession("calls", $this->calls);
-        $this->writePriorityQueueToSession("mail",$this->mail);
-    }
-
-    private function saveExpirationData() {
-        $expireDate = new Carbon("now");
-        $expireDate->addHours( self::$expire_hours );
-        $this->writeSession("expires",$expireDate);
+        $daily = DailyData::initToday($this->user);
+        $daily->setCallList($this->calls);
+        $daily->setMailList($this->mail);
+        $daily->save();
     }
 
     private function replace($contact, \SplPriorityQueue $list) {
@@ -139,7 +98,7 @@ class Daily extends Controller {
     }
 
     private function pickNewContact() {
-        $all = collect( clone $this->contacts );
+        $all = $this->getAvailableContacts();
         $callers = collect( clone $this->calls )->map( function($item){ return $item->id; } );
         $mailers = collect( clone $this->mail )->map( function($item){ return $item->id; } );
         $all = $all->reject( function($item) use ($callers, $mailers){
@@ -147,26 +106,16 @@ class Daily extends Controller {
         } );
         return $all->random();
     }
-
-    private function writePriorityQueueToSession($name, $queue) {
-        $array = [];
-        $source = clone $queue;
-        /* @var $source \SplPriorityQueue */
-        $source->setExtractFlags(\SplPriorityQueue::EXTR_BOTH);
-        foreach($source as $item ){
-            $array[]=$item;
-        }
-        $this->writeSession($name, $array);
-    }
     
-    private function readPriorityQueueFromSession($name){
+    private function readContactIdArray(&$array){
         $queue = new \SplPriorityQueue();
-        $array = $this->readSession($name);
+        $priority = 1000;
         if(is_array($array)){
-            foreach($array as $item){
-                \extract($item);
-                $data = $data->find($data->id); //update model to latest database entry
-                $queue->insert($data, $priority);
+            foreach($array as $contactId){
+                $data = Contact::find($contactId); //update model to latest database entry
+                if( $data !== null ){
+                    $queue->insert($data, $priority--);
+                }
             }
         }
         return $queue;
@@ -186,6 +135,34 @@ class Daily extends Controller {
                 return false;
             }
         } );
+    }
+
+    private function getAvailableContacts() {
+        return Contact::where('active', '=', 1)->where('user_id',$this->user->id)->get();
+    }
+
+    private function initObjectVariables() {
+        $this->contacts = new \SplObjectStorage;
+        $this->calls = null;
+        $this->mail = null;
+    }
+
+    private function loadAvailableContacts() {
+        $this->contacts = $this->getAvailableContacts();
+    }
+
+    private function pickRandomContactsToCall() {
+        $selectCallers = min($this->contacts->count(),self::$call_count);
+        $this->calls = $this->contacts->random($selectCallers);
+    }
+
+    private function pickRandomContactsToMail() {
+        $calls = $this->calls;
+        $remaining = $this->contacts->reject(function($item) use ($calls) {
+            return $calls->contains($item);
+        });
+        $selectMailers = min($remaining->count(), self::$mail_count);
+        $this->mail = $remaining->random($selectMailers);
     }
 
 }
