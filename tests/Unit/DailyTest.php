@@ -15,12 +15,7 @@ use App\DailyData;
 class DailyTest extends TestCase
 {
     use RefreshDatabase;
-    /**
-     * A basic unit test example.
-     *
-     * @return void
-     * @group now
-     */
+    
     public function testDailySuccessfulInit()
     {
         $user = $this->initUser();
@@ -36,12 +31,7 @@ class DailyTest extends TestCase
         $this->assertEquals( count($callers), $daily->calls->count(), "The number of ids in the caller list is not the same as the number of callers.");
         $this->assertEquals( count($maillers), $daily->mail->count(), "The number of ids in the caller list is not the same as the number of callers.");
     }
-    /**
-     * A basic unit test example.
-     *
-     * @return void
-     * @group now
-     */
+    
     public function testLoadFromExistingData(){
         $user = $this->initUser();
         $contacts = $user->contacts;
