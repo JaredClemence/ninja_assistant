@@ -33,11 +33,11 @@ class DailyControllerTest extends TestCase
         
         $daily = new Daily($user);
         $newCallList = collect($daily->calls);
-        $newCallList->each( function( $contact ) use ($deactivate){
-            $this->assertNotEquals($deactivate->id, $contact->id, "None of the new call list contain the deactivated account.");
+        $newCallList->each( function( $contact ) use ($skip){
+            $this->assertNotEquals($skip->id, $contact->id, "None of the new call list contain the deactivated account.");
         } );
-        $calls->each( function($call) use ($deactivate, $newCallList){
-            if($call===$deactivate) return;
+        $calls->each( function($call) use ($skip, $newCallList){
+            if($call===$skip) return;
             else $this->assertTrue($newCallList->contains($call));
         } );
     }
