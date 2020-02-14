@@ -102,4 +102,73 @@ LINE;
         ];
     }
     
+    /**
+     * 
+     * @param type $line
+     * @group Sprint5
+     * @dataProvider provideProblemLinesSprint5
+     */
+    public function testProblemLinesSprint5( $line, $test ){
+        $parser = new GoogleCsvParser();
+        $obj = $parser->getJsonObject(self::$header, $line );
+        $this->assertTrue( $test($obj) );
+    }
+    
+    public function provideProblemLinesSprint5(){
+        $ana = <<<STRING
+Ana Ovando,Ana,,Ovando,,,,,,,,,,,,,,,,,,,,,,"Criminal investigator, Keen County",,,LawSchool ::: * myContacts,* Home,aovando@kerncountylaw.org,,,,,,,,Mobile,+1 661-304-3165,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+STRING;
+        $walsh = <<<STRING
+Billy  Walsh,Billy,,Walsh,,,,,,,,,,,1976-08-18,,,,,,,,,,,,,https://lh5.googleusercontent.com/-nSOvx7FWaYI/WEBV5DBQJXI/AAAAAAAAAAA/dgMJdB_abnQLmZzKQwND3x1czzgzPNaoQCOQCEAE/photo.jpg,* myContacts,* Home,willybalsh@gmail.com,,,,,Home,Aim,willybalsh768,Mobile,917-806-4032,,,,,Home,"Los Angeles California 90036 United States ::: #3
+627 N Spaulding Ave Los Angeles CA 90036 United States"," ::: #3
+627 N Spaulding Ave",Los Angeles ::: Los Angeles, ::: ,CA ::: CA,90036 ::: 90036,United States ::: United States, ::: ,Work,8370 W 3rd St Los Angeles CA 90048 United States,8370 W 3rd St,Los Angeles,,CA,90048,United States,,Work,Self-Employed,,Managing Director,,,,,,,,
+STRING;
+        $winter = <<<STRING
+Billy Winter,Billy,,Winter,,,,,,,,,,,,,,,,,,,,,,<HTCData><Facebook>id:100004967232876/friendof:10512107</Facebook></HTCData>,,,* myContacts,* Other,billywinter3@gmail.com,,,,,,,,Mobile,661-364-5625 ::: 661-319-1859,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+STRING;
+        return [
+            "Ana Ovando"=>[$ana, function($obj){
+                return $obj->notes = "Criminal investigator, Keen County" &&
+                        $obj->phones[0]->number == "+1 661-304-3165" &&
+                        $obj->email == "aovando@kerncountylaw.org";
+            }],
+            "Billy Walsh" => [$walsh, function($obj){
+                return $obj->notes == "" &&
+                        $obj->address == "#3\n627 N Spaulding Ave; Los Angeles, CA 90036; United States"&&
+                        $obj->phones[0]->number =="917-806-4032";
+            }],
+            "Billy Winter" => [$winter, function($obj){
+                return $obj->phones[0]->number == "661-364-5625" &&
+                $obj->phones[1]->number == "661-319-1859" &&
+                $obj->address == "";
+            } ]
+        ];
+    }
+    
+    /**
+     * 
+     * @param type $line
+     * @group Sprint5
+     */
+    public function testLineParsingSprint5(){
+        $ana = <<<STRING
+Ana Ovando,Ana,,Ovando,,,,,,,,,,,,,,,,,,,,,,"Criminal investigator, Keen County",,,LawSchool ::: * myContacts,* Home,aovando@kerncountylaw.org,,,,,,,,Mobile,+1 661-304-3165,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+STRING;
+        $walsh = <<<STRING
+Billy  Walsh,Billy,,Walsh,,,,,,,,,,,1976-08-18,,,,,,,,,,,,,https://lh5.googleusercontent.com/-nSOvx7FWaYI/WEBV5DBQJXI/AAAAAAAAAAA/dgMJdB_abnQLmZzKQwND3x1czzgzPNaoQCOQCEAE/photo.jpg,* myContacts,* Home,willybalsh@gmail.com,,,,,Home,Aim,willybalsh768,Mobile,917-806-4032,,,,,Home,"Los Angeles California 90036 United States ::: #3
+627 N Spaulding Ave Los Angeles CA 90036 United States"," ::: #3
+627 N Spaulding Ave",Los Angeles ::: Los Angeles, ::: ,CA ::: CA,90036 ::: 90036,United States ::: United States, ::: ,Work,8370 W 3rd St Los Angeles CA 90048 United States,8370 W 3rd St,Los Angeles,,CA,90048,United States,,Work,Self-Employed,,Managing Director,,,,,,,,
+STRING;
+        $winter = <<<STRING
+Billy Winter,Billy,,Winter,,,,,,,,,,,,,,,,,,,,,,<HTCData><Facebook>id:100004967232876/friendof:10512107</Facebook></HTCData>,,,* myContacts,* Other,billywinter3@gmail.com,,,,,,,,Mobile,661-364-5625 ::: 661-319-1859,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+STRING;
+        $data = $ana . PHP_EOL. $walsh .PHP_EOL. $winter;
+        $parser = new GoogleCsvParser();
+        $lines = $parser->breakFileIntoLines($data);
+        $this->assertEquals( 3, count($lines) );
+        $this->assertEquals( "Ana Ovando,Ana,,Ovando", substr($lines[0],0,22));
+        $this->assertEquals( "Billy  Walsh,Billy,,Wa", substr($lines[1],0,22));
+        $this->assertEquals( "Billy Winter,Billy,,Wi", substr($lines[2],0,22));
+    }
+    
 }
