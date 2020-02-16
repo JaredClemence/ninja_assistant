@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\User;
+use App\Contact;
 
 /**
  * @property int $user_id;
@@ -22,6 +24,19 @@ class DailyActivityLogEntry extends Model
         'family',
         'occupation',
         'recreation',
-        'dreams'
+        'dreams',
+        'created_at',
     ];
+    
+    protected $casts = [
+        'created_at'=>'datetime'
+    ];
+    
+    public function user(){
+        $this->belongsTo(User::class);
+    }
+    
+    public function contact(){
+        $this->belongsTo(Contact::class);
+    }
 }
