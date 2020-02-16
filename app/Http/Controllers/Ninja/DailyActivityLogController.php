@@ -19,7 +19,12 @@ class DailyActivityLogController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        $params = [
+            'user_id'=>$user->id,
+        ];
+        $entries = DailyActivityLogEntry::where($params)->with(['user','contact'])->orderBy('created_at', 'desc')->get();
+        return view('ninja.activity.index', compact('entries'));
     }
 
     /**
