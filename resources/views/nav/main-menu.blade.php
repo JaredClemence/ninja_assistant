@@ -8,7 +8,7 @@
 
   <div class="collapse navbar-collapse" id="navbarsExample04">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="/">Home</a>
       </li>
       <li class="nav-item dropdown">
@@ -19,7 +19,7 @@
           <a class="dropdown-item" href="{{route('upload_csv')}}">Upload Contacts</a>
         </div>
       </li>
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="{{route('activity.list')}}">Activity Log</a>
       </li>
     </ul>
