@@ -33,10 +33,10 @@ class DailyActivityLogEntry extends Model
     ];
     
     public function user(){
-        $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);
     }
     
     public function contact(){
-        $this->belongsTo(Contact::class);
+        return $this->belongsTo(Contact::class);
     }
 }
