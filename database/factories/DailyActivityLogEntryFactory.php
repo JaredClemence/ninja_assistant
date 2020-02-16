@@ -2,10 +2,10 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\AppDailyActivityLogEntry;
+use App\DailyActivityLogEntry;
 use Faker\Generator as Faker;
 
-$factory->define(AppDailyActivityLogEntry::class, function (Faker $faker) {
+$factory->define(DailyActivityLogEntry::class, function (Faker $faker) {
     return [
         'user_id'=>$faker->randomNumber(),
         'contact_id'=>$faker->randomNumber(),
