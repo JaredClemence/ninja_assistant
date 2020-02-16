@@ -7,7 +7,7 @@
         <ul class="list-group">
             <li class="list-group-item">
                 <div class='row'>
-                    <div class='col-12 col-md-2'>
+                    <div class='col-12 col-md-3'>
                         {{$entry->created_at->format('l, M d, Y')}}
                     </div>
                     <div class='col-12 col-md'>

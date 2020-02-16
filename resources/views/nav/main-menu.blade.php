@@ -9,7 +9,7 @@
   <div class="collapse navbar-collapse" id="navbarsExample04">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="/">Home</a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contacts</a>
@@ -18,6 +18,9 @@
           <a class="dropdown-item" href="{{route('index_contacts')}}">Show Contacts</a>
           <a class="dropdown-item" href="{{route('upload_csv')}}">Upload Contacts</a>
         </div>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="{{route('activity.list')}}">Activity Log</a>
       </li>
     </ul>
   </div>
