@@ -17,32 +17,36 @@ use App\Mail\VerifyContactDetailsNotice;
  * The abstract controller returns this for new and unprocessed contact 
  * files.
  */
-class UnprocessedController extends AbstractController
-{
+class UnprocessedController extends AbstractController {
+
     /** @var ContactCsvFile */
     private $file;
     private $header;
     private $contacts;
     private $intermediaries;
-    
+
     public function process(\App\ContactCsvFile $file) {
-        $this->initializeDelegate();
-        $this->file = $file;
-        $this->parseFile();
-        $this->makeIntermediaries();
-        $this->saveIntermediaries();
-        $this->createNextJob();
-        $this->setProcessedDate();
+        try {
+            $this->initializeDelegate();
+            $this->file = $file;
+            $this->parseFile();
+            $this->makeIntermediaries();
+            $this->saveIntermediaries();
+            $this->createNextJob();
+            $this->setProcessedDate();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Unable to process file without an exception.");
+        }
         $this->cleanup();
     }
-    
-    private function cleanup(){
-        unset( $this->file );
-        unset( $this->header );
-        unset( $this->contacts );
-        unset( $this->intermediaries );
+
+    private function cleanup() {
+        unset($this->file);
+        unset($this->header);
+        unset($this->contacts);
+        unset($this->intermediaries);
     }
-    
+
     private function parseFile() {
         $content = $this->getFileContent();
         /* @var $csvParser AbstractCsvParser */
@@ -51,14 +55,20 @@ class UnprocessedController extends AbstractController
         list( $header, $lines ) = $csvParser->breakIntoHeaderAndContacts($content);
         $this->header = $header;
         $this->contacts = $lines;
-        $this->getDelegate()->reportHeader( $this->header );
+        $this->getDelegate()->reportHeader($this->header);
     }
 
     private function makeIntermediaries() {
         $this->intermediaries = new \SplDoublyLinkedList();
-        foreach( $this->contacts as $line ){
-            $intermediary = $this->makeFromLine( $line );
-            $this->intermediaries->push( $intermediary );
+        foreach ($this->contacts as $line) {
+            try {
+                $intermediary = $this->makeFromLine($line);
+                $this->intermediaries->push($intermediary);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error("Unable to make intermediary from file line:\n$line\n");
+            } catch (\Error $e) {
+                \Illuminate\Support\Facades\Log::error("Unable to make intermediary from file line:\n$line\n");
+            }
         }
     }
 
@@ -71,16 +81,20 @@ class UnprocessedController extends AbstractController
 
     private function createNextJob() {
         $user = null;
-        foreach($this->intermediaries as $intermediate){
-            if( $user == null ){
-                $user = \App\User::find( $intermediate->user_id);
-            }
-            $intermediate = IntermediateRecord::find($intermediate->id);
-            if( $intermediate ){
-                SingleIntermediaryToJson::dispatch($intermediate);
+        foreach ($this->intermediaries as $intermediate) {
+            try {
+                if ($user == null) {
+                    $user = \App\User::find($intermediate->user_id);
+                }
+                $intermediate = IntermediateRecord::find($intermediate->id);
+                if ($intermediate) {
+                    SingleIntermediaryToJson::dispatch($intermediate);
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error("Failed creating next job un UnprocessedController.");
             }
         }
-        if( $user != null ){
+        if ($user != null) {
             Mail::queue(new VerifyContactDetailsNotice($user));
         }
     }
@@ -89,17 +103,21 @@ class UnprocessedController extends AbstractController
         $count = count($this->intermediaries);
         $itemCount = 0;
         $start = microtime(true);
-        \Illuminate\Support\Facades\Log::info( "Saving $count intermediary files.");
-        foreach( $this->intermediaries as $item ){
-            $item->save();
-            $time = microtime(true) - $start;
-            $itemCount++;
-            \Illuminate\Support\Facades\Log::info("Saved $itemCount item in $time seconds.");
+        \Illuminate\Support\Facades\Log::info("Saving $count intermediary files.");
+        foreach ($this->intermediaries as $item) {
+            try {
+                $item->save();
+                $time = microtime(true) - $start;
+                $itemCount++;
+                \Illuminate\Support\Facades\Log::info("Saved $itemCount item in $time seconds.");
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error("Unable to save an intermediary.");
+            }
         }
     }
-    
-    public function failed(Exception $exception){
-        foreach( $this->intermediaries as $item ){
+
+    public function failed(Exception $exception) {
+        foreach ($this->intermediaries as $item) {
             $item->delete();
         }
     }
