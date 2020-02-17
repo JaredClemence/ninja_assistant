@@ -27,7 +27,10 @@
             <div class='form-group'>
                 <strong><label for='{{$key}}'>{{$varname}}:</label></strong><br/>
                 @if(isset($last)&&$last!==null)
-            {{$last->created_at->format('m/d/Y')}}: $last->{$key}
+                @php
+                $value = $last->{$key};
+                @endphp
+            {{$last->created_at->format('m/d/Y')}}: {{$value}}
             @else
             No previous notes for {{$varname}}
             @endif
