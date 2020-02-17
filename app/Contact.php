@@ -37,6 +37,10 @@ class Contact extends Model
     public function latestNote(){
         return DailyActivityLogEntry::where('contact_id','=', $this->id)->latest()->get()->first();
     }
+    
+    public function logEntries(){
+        return $this->hasMany(DailyActivityLogEntry::class);
+    }
 
 
     public function phones(){
