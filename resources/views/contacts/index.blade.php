@@ -27,7 +27,11 @@
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="{{$contact->id}}">
                     <label class="form-check-label" for="defaultCheck1">
+                        @if( trim($contact->name) !='')
                         {{$contact->name}}
+                        @else
+                        <em>No Name on Record</em>
+                        @endif
                     </label>
                 </div>
                 <br/>
