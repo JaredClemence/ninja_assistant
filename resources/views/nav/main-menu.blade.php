@@ -17,6 +17,7 @@
           <a class="dropdown-item" href="{{route('create_contact')}}">Create Contact</a>
           <a class="dropdown-item" href="{{route('index_contacts')}}">Show Contacts</a>
           <a class="dropdown-item" href="{{route('upload_csv')}}">Upload Contacts</a>
+          <a class="dropdown-item" href="{{route('contact_preview')}}">Verify Uploads</a>
         </div>
       </li>
       <li class="nav-item">

@@ -12,6 +12,7 @@ use App\Http\Controllers\AbstractFactory\CsvLines\AbstractCsvParser;
 use App\Jobs\SingleIntermediaryToJson;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerifyContactDetailsNotice;
+use Illuminate\Support\Facades\Log;
 
 /**
  * The abstract controller returns this for new and unprocessed contact 
@@ -31,13 +32,18 @@ class UnprocessedController extends AbstractController {
             $this->file = $file;
             $this->parseFile();
             $this->makeIntermediaries();
+            Log::info("Finished making intermediaries");
             $this->saveIntermediaries();
+            Log::info("Finished saving intermediaries");
             $this->createNextJob();
+            Log::info("Created next job.");
             $this->setProcessedDate();
+            Log::info("Finished process date.");
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error("Unable to process file without an exception.");
         }
         $this->cleanup();
+        Log::info("Finished cleanup.");
     }
 
     private function cleanup() {
@@ -81,8 +87,10 @@ class UnprocessedController extends AbstractController {
 
     private function createNextJob() {
         $user = null;
+        $count = 0;
         foreach ($this->intermediaries as $intermediate) {
             try {
+                $count++;
                 if ($user == null) {
                     $user = \App\User::find($intermediate->user_id);
                 }
@@ -90,6 +98,7 @@ class UnprocessedController extends AbstractController {
                 if ($intermediate) {
                     SingleIntermediaryToJson::dispatch($intermediate);
                 }
+                Log::info("Created intermediate conversion job for record #$count");
             } catch (\Exception $e) {
                 \Illuminate\Support\Facades\Log::error("Failed creating next job un UnprocessedController.");
             }

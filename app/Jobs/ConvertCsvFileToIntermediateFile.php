@@ -38,6 +38,8 @@ class ConvertCsvFileToIntermediateFile implements ShouldQueue
     public function handle()
     {
         $this->file->process($this->delegate);
+        Log::info("Convert CSV file finished.");
+        return;
     }
     
     
