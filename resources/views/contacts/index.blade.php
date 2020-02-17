@@ -15,8 +15,8 @@ $(document).ready(function(){
 </script>
 <div class='form'>
     <div class='form-group'>
-        <label for='filter'>Filter</label>
-        <input type='text' class='form-control' id='filter' />
+        <label for='filter'>Filter Contact List</label>
+        <input type='text' class='form-control' id='filter' placeholder='type name here'/>
     </div>
 </div>
 <div class='list-group' id='display'>
