@@ -31,7 +31,7 @@
     <div class="col-12">
         <h2>Contact History</h2>
         <ul class='list-group'>
-            @foreach( $contact->logEntries as $entry )
+            @foreach( $contact->logEntries->sortByDesc('created_at') as $entry )
             @include('templates.logEntryListItem')
             @endforeach
         </ul>

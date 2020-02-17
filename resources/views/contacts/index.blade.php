@@ -18,6 +18,7 @@
             </em>
         </div>
         <div class='col-12 col-sm-4'>
+            <a href='{{route('contact.show',['contact'=>$contact])}}' class='btn btn-link'>Show Detail</a><br/>
             <a href='{{route('edit_contact',['contact'=>$contact])}}' class='btn btn-link'>Edit</a><br/>
             <a href='{{route('delete_contact',['contact'=>$contact])}}' class='btn btn-link'>Delete</a>
         </div>
