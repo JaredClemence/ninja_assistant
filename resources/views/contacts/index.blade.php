@@ -1,6 +1,25 @@
 @extends('main')
 @section('main')
-<div class='list-group'>
+<script>
+$(document).ready(function(){
+  $("#filter").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    let listItems = $("#display .list-group-item");
+    listItems.filter(function() {
+        let text = $(this).text().toLowerCase();
+        let elem = $(this);
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+    });
+  });
+});
+</script>
+<div class='form'>
+    <div class='form-group'>
+        <label for='filter'>Filter</label>
+        <input type='text' class='form-control' id='filter' />
+    </div>
+</div>
+<div class='list-group' id='display'>
     @foreach($all as $contact)
     <div class='list-group-item'>
     <div class='row'>
