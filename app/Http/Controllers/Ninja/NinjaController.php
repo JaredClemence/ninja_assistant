@@ -44,8 +44,7 @@ class NinjaController extends Controller {
     public function skipContact(Contact $contact) {
         $this->loadUser();
         $this->makeDaily();
-        $this->daily->replaceCaller($contact);
-        $this->daily->replaceMailer($contact);
+        $this->daily->replaceContact($contact);
         $contact->save();
         return back();
     }

@@ -37,19 +37,23 @@ class Daily extends Controller {
         $this->generateNewData();
         $this->saveSessionData();
     }
-
-    public function replaceCaller($contact) {
-        $list = clone $this->calls;
-        $this->replace($contact, $list);
-        $this->calls = $list;
+    
+    public function replaceContact( $contact ){
+        $this->replaceCaller($contact);
+        $this->replaceMailer($contact);
         $this->saveSessionData();
     }
 
-    public function replaceMailer($contact) {
+    private function replaceCaller($contact) {
+        $list = clone $this->calls;
+        $this->replace($contact, $list);
+        $this->calls = $list;
+    }
+
+    private function replaceMailer($contact) {
         $list = clone $this->mail;
         $this->replace($contact, $list);
         $this->mail = $list;
-        $this->saveSessionData();
     }
 
     private function loadSessionData() {
