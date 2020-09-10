@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Clemence\PhoneNumber;
 use App\User;
+use App\Services\ContactsService;
 
 class ContactController extends Controller {
 
@@ -114,6 +115,17 @@ class ContactController extends Controller {
 
     public function user(): User {
         return Auth::user();
+    }
+    
+    public function bulkAction(Request $request, ContactsService $service) {
+        $inputs = $request->all();
+        $contact_ids = array_filter($inputs, function($key){
+            if(preg_match('/checkbox_/', $key)) return true;
+            return false;
+        }, ARRAY_FILTER_USE_KEY);
+        $action = $request->input('bulk_action');
+        $service->doAction( $action, $contact_ids );
+        return back();
     }
 
 }

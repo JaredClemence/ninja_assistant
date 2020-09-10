@@ -33,6 +33,7 @@ Route::group(['middleware'=>['auth','has_contacts']], function(){
     Route::post('/ninja/{contact}/activity/{log}/edit', 'Ninja\DailyActivityLogController@update');
     Route::get('/ninja/activity/log', 'Ninja\DailyActivityLogController@index' )->name('activity.list');
     Route::get('/ninja/activity/{activity}','Ninja\DailyActivityLogController@show' )->name('activity.view');
+    Route::post('/contacts/bulk_action', 'ContactController@bulkAction' )->name('contacts.bulk');
 } );
 Route::group(['middleware'=>['auth']], function(){
     Route::get('/contacts/new', 'ContactController@create')->name('create_contact');

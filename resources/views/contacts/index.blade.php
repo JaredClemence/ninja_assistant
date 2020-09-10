@@ -19,41 +19,22 @@
         <input type='text' class='form-control' id='filter' placeholder='type name here'/>
     </div>
 </div>
-<div class='list-group' id='display'>
-    @foreach($all as $contact)
-    <div class='list-group-item'>
-        <div class='row'>
-            <div class='col-12 col-sm-3'>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="{{$contact->id}}">
-                    <label class="form-check-label" for="defaultCheck1">
-                        @if( trim($contact->name) !='')
-                        {{$contact->name}}
-                        @else
-                        <em>No Name on Record</em>
-                        @endif
-                    </label>
-                </div>
-                <br/>
-                <em>Notes: {{$contact->note}}</em>
+<form action='{{route('contacts.bulk')}}' method='post'>
+    @csrf
+            <div class='form-group'>
+                <label for='bulk_action'>Bulk Action</label>
+                <select class='form-control' id='bulk_action' name='bulk_action'>
+                    <option></option>
+                    <option>Activate</option>
+                    <option>Deactivate</option>
+                    <option>Delete</option>
+                </select>
             </div>
-            <div class='col-12 col-sm-4'>
-                <em>
-                    @if($contact->active) Eligible for FORD
-                    @else Disabled for FORD
-                    @endif
-                </em>
-                {{$contact->email}}<br/>
-                {{$contact->address}}<br/>
-                
-            </div>
-            <div class='col-12 col-sm-4'>
-                <a href='{{route('contact.show',['contact'=>$contact])}}' class='btn btn-link'>Show Detail</a><br/>
-                <a href='{{route('edit_contact',['contact'=>$contact])}}' class='btn btn-link'>Edit</a><br/>
-                <a href='{{route('delete_contact',['contact'=>$contact])}}' class='btn btn-link'>Delete</a>
-            </div>
-        </div>
+            <button type='submit' class='btn btn-primary'>Perform Bulk Action</button><br/>&nbsp;
+    <div class='list-group' id='display'>
+        @foreach($all as $contact)
+        @include('contacts.contact_list_item')
+        @endforeach
     </div>
-    @endforeach
-</div>
+</form>
 @endsection
