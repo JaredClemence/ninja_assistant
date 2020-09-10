@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Contact;
 use Carbon\Carbon;
+use App\Http\Controllers\Ninja\Service\NinjaLogEntryService;
 
 class DailyActivityLogController extends Controller
 {
@@ -32,22 +33,10 @@ class DailyActivityLogController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Contact $contact, $action)
+    public function create(Contact $contact, $action, NinjaLogEntryService $service)
     {
-        $user = Auth::user();
-        $params = [
-            'user_id'=>$user->id,
-            'contact_id'=>$contact->id,
-            'action'=>$action
-        ];
-        $entry = DailyActivityLogEntry::whereDate('created_at', Carbon::today())->where($params)->latest()->get()->first();
-        if( !$entry ){
-            $entry = DailyActivityLogEntry::create($params);
-            return $this->edit($contact, $entry);
-        }else{
-            return redirect(route('edit_activity_log',['contact'=>$contact,'log'=>$entry]));
-        }
-        
+        $entry = $service->getOrCreateTodaysLogEntry($contact, $action);
+        return redirect(route('edit_activity_log',['contact'=>$contact,'log'=>$entry]));
     }
 
     /**

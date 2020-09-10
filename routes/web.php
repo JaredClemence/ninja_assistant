@@ -28,7 +28,6 @@ Route::group(['middleware'=>['auth','has_contacts']], function(){
     Route::get('/contacts/{contact}/show', 'ContactController@show')->name('contact.show');
     Route::get('/contacts/all', 'ContactController@index')->name('index_contacts');
     Route::get('/contacts/{contact}/delete', 'ContactController@destroy')->name('delete_contact');
-    Route::get('/contacts/new', 'ContactController@create')->name('create_contact');
     Route::get('/ninja/{contact}/activity/{action}/create', 'Ninja\DailyActivityLogController@create')->name('create_activity_log');
     Route::get('/ninja/{contact}/activity/{log}/edit', 'Ninja\DailyActivityLogController@edit')->name('edit_activity_log');
     Route::post('/ninja/{contact}/activity/{log}/edit', 'Ninja\DailyActivityLogController@update');
@@ -36,6 +35,7 @@ Route::group(['middleware'=>['auth','has_contacts']], function(){
     Route::get('/ninja/activity/{activity}','Ninja\DailyActivityLogController@show' )->name('activity.view');
 } );
 Route::group(['middleware'=>['auth']], function(){
+    Route::get('/contacts/new', 'ContactController@create')->name('create_contact');
     Route::get('/contacts/info', function(){ 
         return view('contacts.upload.start');
     } )->name('upload_contacts_instruction');
