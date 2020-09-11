@@ -5,13 +5,19 @@
         </div>
         <div class='col-12 col-md'>
             @php
-            $contactExists = $entry->contact !== null;
+            $contact = $entry->contact;
+            $uri = null;
+            try{
+                $uri = route('contact.show',['contact'=>$contact]);
+            }catch( \Throwable $thrown ){
+            }catch( \Error $thrown ){
+            };
             @endphp
             <strong>Contact Name:</strong> 
-            @if($contactExists)
-            <a href="{{route('contact.show',['contact'=>$entry->contact])}}">{{$entry->contact->name}}</a>
+            @if($uri!=null)
+            <a href="{{$uri}}">{{$contact->name}}</a>
             @else
-            Deleted
+            Contact Deleted
             @endif
             <span class='d-block'><br/></span>
         </div>
