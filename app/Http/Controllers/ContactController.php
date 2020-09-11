@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Clemence\PhoneNumber;
 use App\User;
 use App\Services\ContactsService;
+use App\Services\DailyActivityLogEntryService;
 
 class ContactController extends Controller {
 
@@ -49,8 +50,9 @@ class ContactController extends Controller {
      * @param  \App\Contact  $contact
      * @return \Illuminate\Http\Response
      */
-    public function show(Contact $contact) {
-        return view('contacts.show', compact('contact'));
+    public function show(Contact $contact, DailyActivityLogEntryService $logEntries) {
+        $entries = $logEntries->byContactWithSimplePagination($contact, 5);
+        return view('contacts.show', compact('contact','entries'));
     }
 
     /**

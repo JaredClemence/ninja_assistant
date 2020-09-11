@@ -30,8 +30,9 @@
     </div>
     <div class="col-12">
         <h2>Contact History</h2>
+        {{$entries->links()}}
         <ul class='list-group'>
-            @foreach( $contact->logEntries->sortByDesc('created_at') as $entry )
+            @foreach( $entries as $entry )
             @include('templates.logEntryListItem')
             @endforeach
         </ul>

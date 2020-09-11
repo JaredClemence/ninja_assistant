@@ -4,13 +4,10 @@ namespace App\Http\Controllers\Ninja;
 
 use App\Http\Controllers\Controller;
 use App\DailyActivityLogEntry;
-use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Contact;
-use Carbon\Carbon;
 use App\Http\Controllers\Ninja\Service\NinjaLogEntryService;
-use Illuminate\Pagination\Paginator;
 
 class DailyActivityLogController extends Controller
 {
