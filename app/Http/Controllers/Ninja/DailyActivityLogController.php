@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Contact;
 use Carbon\Carbon;
 use App\Http\Controllers\Ninja\Service\NinjaLogEntryService;
+use Illuminate\Pagination\Paginator;
 
 class DailyActivityLogController extends Controller
 {
@@ -24,7 +25,7 @@ class DailyActivityLogController extends Controller
         $params = [
             'user_id'=>$user->id,
         ];
-        $entries = DailyActivityLogEntry::where($params)->with(['user','contact'])->orderBy('created_at', 'desc')->get();
+        $entries = DailyActivityLogEntry::where($params)->with(['user','contact'])->orderBy('created_at', 'desc')->simplePaginate(15);
         return view('ninja.activity.index', compact('entries'));
     }
 
