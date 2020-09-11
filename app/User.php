@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Subscriber;
 
 class User extends Authenticatable
 {
@@ -36,6 +37,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    
+    public function subscriber(){
+        return $this->hasOne(Subscriber::class);
+    }
     
     public function contacts(){
         return $this->hasMany('App\Contact');

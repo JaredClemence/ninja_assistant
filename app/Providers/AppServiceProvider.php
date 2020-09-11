@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -41,5 +42,6 @@ class AppServiceProvider extends ServiceProvider
             \Illuminate\Support\Facades\Log::error($formattedError);
             echo $formattedError;
         });
+        Paginator::useBootstrapThree();
     }
 }

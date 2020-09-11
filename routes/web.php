@@ -58,3 +58,5 @@ Route::group(['middleware'=>['auth']], function(){
         return view('contacts.upload.intermediate_success');
     });
 });
+
+Route::get('/subscribers/all', 'SubscriberController@index');
