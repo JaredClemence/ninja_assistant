@@ -4,8 +4,15 @@
             {{$entry->created_at->format('l, M d, Y')}}
         </div>
         <div class='col-12 col-md'>
+            @php
+            $contactExists = $entry->contact !== null;
+            @endphp
             <strong>Contact Name:</strong> 
+            @if($contactExists)
             <a href="{{route('contact.show',['contact'=>$entry->contact])}}">{{$entry->contact->name}}</a>
+            @else
+            Deleted
+            @endif
             <span class='d-block'><br/></span>
         </div>
         <div class='col-12 col-md'>
