@@ -22,14 +22,7 @@
                         {{$caller->name}}<br/><em>{{$caller->note}}</em>
                     </section>
                     <section class="col-12 col-sm-6">
-                @foreach($caller->phones as $phone)
-                  @php
-                    $number = $phone->number;
-                    $type   = $phone->name;
-                  @endphp
-                  <a href="tel:{{$number}}" class="btn btn-secondary btn-block">Dial {{$type}}: {{$number}}</a>
-                @endforeach
-                  <a class="btn btn-primary btn-block" href="{{route('create_activity_log',['contact'=>$caller,'action'=>'call'])}}">Make Notes</a>
+                  <a class="btn btn-primary btn-block" href="{{route('create_activity_log',['contact'=>$caller,'action'=>'call'])}}">Call Contact</a>
                     </section>
                     </div>
                 </section>

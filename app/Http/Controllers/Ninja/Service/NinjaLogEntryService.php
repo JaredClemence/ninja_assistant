@@ -33,6 +33,17 @@ class NinjaLogEntryService {
         }
         return $entry;
     }
+    
+    public function byContactWithSimplePagination(Contact $contact, $paginateQt){
+        return DailyActivityLogEntry::where('contact_id',$contact->id)->orderBy('created_at','desc')->simplePaginate($paginateQt);
+    }
+
+    public function getMostRecentLogEntryBeforeCurrent($contact, $currentEntry=null) {
+        $params = [['contact_id','=',$contact->id]];
+        if( $currentEntry ) $params[] = ['id','<>',$currentEntry->id];
+        $last = DailyActivityLogEntry::where($params)->latest()->get()->first();
+        return $last;
+    }
 
     private function makeParamsArray($contact, $action) {
         $user = Auth::user();
@@ -42,6 +53,10 @@ class NinjaLogEntryService {
             'action'=>$action
         ];
         return $params;
+    }
+
+    public function make() {
+        return new DailyActivityLogEntry();
     }
 
 }

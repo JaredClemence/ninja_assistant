@@ -31,10 +31,28 @@ class DailyActivityLogController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Contact $contact, $action, NinjaLogEntryService $service)
+    public function showCreate(Contact $contact, $action, NinjaLogEntryService $logService)
     {
-        $entry = $service->getOrCreateTodaysLogEntry($contact, $action);
-        return redirect(route('edit_activity_log',['contact'=>$contact,'log'=>$entry]));
+        $entry = $logService->getTodaysLogEntry($contact, $action);
+        if( $entry ){
+            return redirect(route('edit_activity_log',['contact'=>$contact,'log'=>$entry]));
+        }else{
+            $log = $logService->make();
+            $last = $logService->getMostRecentLogEntryBeforeCurrent( $contact, $log );
+            return view('ninja.activity.create', compact('contact','log','last','action'));
+        }
+    }
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request, Contact $contact, $action, NinjaLogEntryService $logService)
+    {
+        $entry = $logService->getOrCreateTodaysLogEntry($contact, $action);
+        $entry->fill($request->only(['family','occupation','recreation','dreams']));
+        $entry->save();
+        return redirect(route('daily_call'));
     }
 
     /**
@@ -54,12 +72,9 @@ class DailyActivityLogController extends Controller
      * @param  \App\DailyActivityLogEntry  $dailyActivityLogEntry
      * @return \Illuminate\Http\Response
      */
-    public function edit(Contact $contact, DailyActivityLogEntry $log)
+    public function edit(Contact $contact, DailyActivityLogEntry $log, NinjaLogEntryService $service)
     {
-        $last = DailyActivityLogEntry::where([
-            ['contact_id','=',$contact->id],
-            ['id','<>',$log->id]
-        ])->latest()->get()->first();
+        $last = $service->getMostRecentLogEntryBeforeCurrent( $contact, $log );
         return view('ninja.activity.edit', compact('contact','log','last'));
     }
 
