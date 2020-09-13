@@ -4,6 +4,9 @@
 
     <div class='row'>
         <div class='col-12'>
+            <a class="btn btn-link" href="{{route('edit_contact',['contact'=>$contact])}}">Edit</a>
+            <a class="btn btn-link" href="{{route('skip_contact',['contact'=>$contact])}}">Skip</a>
+            <a class="btn btn-link" href="{{route('deactivate_contact',['contact'=>$contact])}}">Deactivate</a>
             <h1>Contact</h1>
             <div>
                 Name: <strong>{{$contact->name}}</strong><br/>
