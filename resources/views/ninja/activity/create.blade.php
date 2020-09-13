@@ -9,6 +9,7 @@
         Name: <strong>{{$contact->name}}</strong><br/>
         Note: {{$contact->note}}
     </div>
+            @include('ninja.activity.call_buttons')
     </div>
 </div>
 @include('ninja.activity.form_inputs')
