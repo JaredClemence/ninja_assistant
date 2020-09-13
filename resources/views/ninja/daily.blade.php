@@ -27,7 +27,6 @@
                     </div>
                 </section>
                 <section class="col-12">
-                <a class="btn btn-link" href="{{route('edit_contact',['contact'=>$caller])}}">Edit</a>
                 <a class="btn btn-link" href="{{route('skip_contact',['contact'=>$caller])}}">Skip</a>
                 <a class="btn btn-link" href="{{route('deactivate_contact',['contact'=>$caller])}}">Deactivate</a>
                 </section>

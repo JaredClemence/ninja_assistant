@@ -26,11 +26,19 @@
             @else
             No previous notes for {{$varname}}
             @endif
-                <input id='{{$key}}' name='{{$key}}' size='100' class='form-control' value='{{$log->{$key}!==null?$log->{$key}:""}}'/>
+                <input id='{{$key}}' name='{{$key}}' size='100' class='form-control ninja-data-field' value='{{$log->{$key}!==null?$log->{$key}:""}}'/>
             </div>
             
             @endforeach
             <button class="btn btn-primary" type='submit'>Contact Successful</button>
             <a href="{{route('daily_call')}}" class="btn btn-secondary">No Contact</a>
+            <a href="javascript:leave_message()" class="btn btn-secondary">Left Message</a>
+            <script type="text/javascript">
+                function leave_message(){
+                    $('.ninja-data-field').val('Left voicemale.');
+                    
+                }
+                
+            </script>
     </div>
 </div>
