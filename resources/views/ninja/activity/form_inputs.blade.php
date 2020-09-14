@@ -30,13 +30,15 @@
             </div>
             
             @endforeach
-            <button class="btn btn-primary" type='submit'>Contact Successful</button>
-            <a href="{{route('daily_call')}}" class="btn btn-secondary">No Contact</a>
-            <a href="javascript:leave_message()" class="btn btn-secondary">Left Message</a>
+            <button class="btn btn-primary" type='submit' id="submit_btn">Contact Successful</button>
+            <a href="{{route('daily_call')}}" class="btn btn-secondary" id="cancel_btn">No Contact</a>
+            <a href="javascript:leave_message()" class="btn btn-secondary" id="message_btn">Left Message</a>
             <script type="text/javascript">
                 function leave_message(){
                     $('.ninja-data-field').val('Left voicemale.');
-                    
+                    $('#submit_btn').html("Save Record");
+                    $('#cancel_btn').html("Cancel");
+                    $('#message_btn').remove();
                 }
                 
             </script>
